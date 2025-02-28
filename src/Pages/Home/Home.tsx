@@ -3,9 +3,10 @@ import { Box, Typography, Button, Container, useTheme } from '@mui/material';
 import { styled } from '@mui/system';
 import image from '../../assets/Vector.png'; // Replace with your actual image import
 import Nav from '../../Components/Nav';
-import Footer from '../../Components/Footer'
-import About from '../../Components/About'
+import Footer from '../../Components/Footer';
+import About from '../../Components/About';
 import { keyframes } from '@emotion/react';
+
 const fadeIn = keyframes`
   from {
     opacity: 0;
@@ -27,7 +28,7 @@ const HeroSection = styled(Box)(({ theme }) => ({
   },
 }));
 
-function Home() {
+const Home: React.FC = () => {
   const theme = useTheme();
 
   return (
@@ -61,7 +62,7 @@ function Home() {
                 variant="contained"
                 color="primary"
                 size="large"
-                sx={{ mt: 3 ,color: 'white'}}
+                sx={{ mt: 3, color: 'white' }}
               >
                 Book an Appointment
               </Button>
@@ -80,13 +81,11 @@ function Home() {
             </Box>
           </Box>
         </Container>
-        
       </HeroSection>
-      <About/>
-      <Footer/>
+      <About />
+      <Footer />
     </Box>
   );
-}
+};
 
 export default Home;
-

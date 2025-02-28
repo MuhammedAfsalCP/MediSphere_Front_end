@@ -46,7 +46,7 @@ const IconCard = styled(Box)(({ theme }) => ({
   },
 }));
 
-function About() {
+const About: React.FC = () => {
   const theme = useTheme();
 
   return (
@@ -63,7 +63,6 @@ function About() {
         <Typography
           variant="body1"
           color="text.secondary"
-          
           sx={{ maxWidth: '800px', margin: '0 auto', mb: 4 }}
         >
           At MediSphere Hospital, we are committed to delivering compassionate, state-of-the-art healthcare to our community. Our dedicated team of experienced professionals and cutting-edge medical technology ensure that every patient receives personalized care. Whether it's emergency services or specialized treatments, we strive to provide a holistic healthcare experience designed to promote healing and enhance quality of life.
@@ -108,7 +107,7 @@ function About() {
               '&:hover': {
                 transform: 'scale(1.05)',
               },
-              color:"white"
+              color: 'white',
             }}
           >
             Learn More
@@ -131,6 +130,6 @@ function About() {
       </Container>
     </AboutSectionWrapper>
   );
-}
+};
 
 export default About;

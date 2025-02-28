@@ -10,10 +10,10 @@ const FeatureBox = styled(Box)(({ theme }) => ({
   flex: 1,
 }));
 
-const Footer = () => {
+const Footer: React.FC = () => {
   return (
-    <Box sx={{ py: 8 ,background: 'linear-gradient(90deg, #f0f8ff, #ffffff)'}}>
-      <Container >
+    <Box sx={{ py: 8, background: 'linear-gradient(90deg, #f0f8ff, #ffffff)' }}>
+      <Container>
         <Typography variant="h4" component="h2" align="center" gutterBottom>
           Features
         </Typography>

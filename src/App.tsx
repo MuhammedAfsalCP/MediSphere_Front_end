@@ -13,6 +13,7 @@ import ForgotPassword from './Pages/Authentication/Forgetpassword';
 import DoctorCall from './Pages/Videocall/DoctorCall';
 import PatientCall from './Pages/Videocall/PatientCall';
 import AppointmentLayout from './Pages/User/Appointment/appoitmentlayout';
+import About from './Components/About';
 
 
 
@@ -21,6 +22,7 @@ function App() {
     <>
       <Routes>
           <Route path='/' element={<Home/>}/>
+          <Route path='/About' element={<About/>}/>
           <Route path='/login' element={<Login/>}/>
           <Route path='/loginmobile' element={<LoginWithMobile/>}/>
           <Route path='/userregister' element={<RegisterUser/>}/>

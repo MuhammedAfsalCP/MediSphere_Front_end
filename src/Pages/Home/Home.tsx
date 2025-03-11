@@ -6,17 +6,8 @@ import Nav from '../../Components/Nav';
 import Footer from '../../Components/Footer';
 import About from '../../Components/About';
 import { keyframes } from '@emotion/react';
+import { fadeIn } from '../../utils/materialui/Materialui';
 
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
 
 const HeroSection = styled(Box)(({ theme }) => ({
   background: 'linear-gradient(90deg, #f0f8ff, #ffffff)',

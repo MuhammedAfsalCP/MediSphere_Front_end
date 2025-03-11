@@ -1,4 +1,4 @@
-import { Box, Button, styled, TextField } from "@mui/material";
+import { Box, Button, keyframes, styled, TextField } from "@mui/material";
 
 export const LoginWrapper = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -51,3 +51,15 @@ export const LoginWrapper = styled(Box)(({ theme }) => ({
     padding: "12px",
     fontWeight: "bold",
   });
+
+
+  export const fadeIn = keyframes`
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  `;

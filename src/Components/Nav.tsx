@@ -113,11 +113,12 @@ const user=useSelector((state:any)=>state.auth)
           </Button>
           <Button
             startIcon={<DescriptionIcon />}
-            disabled={true}
+            disabled={!user?.user}
             sx={{
               color: theme.palette.text.primary,
               '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
             }}
+            onClick={()=>navigate('/prescriptions')}
           >
             Prescription
           </Button>

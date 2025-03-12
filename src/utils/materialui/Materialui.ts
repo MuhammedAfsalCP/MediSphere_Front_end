@@ -63,3 +63,18 @@ export const LoginWrapper = styled(Box)(({ theme }) => ({
       transform: translateY(0);
     }
   `;
+
+
+  export const DoctorCardStyled = styled(Box)(({ theme }) => ({
+    backgroundColor: theme.palette.background.default,
+    animation: `${fadeIn} 1s ease-in-out`,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(4),
+    width: "300px",
+    textAlign: "center",
+    transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+    "&:hover": {
+      transform: "translateY(-10px)",
+      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    },
+  }));

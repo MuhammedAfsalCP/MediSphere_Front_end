@@ -12,8 +12,12 @@ import LoginWithMobile from './Pages/Authentication/LoginWithMobile';
 import ForgotPassword from './Pages/Authentication/Forgetpassword';
 import DoctorCall from './Pages/Videocall/DoctorCall';
 import PatientCall from './Pages/Videocall/PatientCall';
-import AppointmentLayout from './Pages/User/Appointment/appoitmentlayout';
 import About from './Components/About';
+import DoctorsShowing from './Pages/User/Appointment/DoctorsList/DoctorsShowing';
+import AppointmentLayout from './Pages/User/Appointment/AppoitmentLayout';
+import AppointmentHistoryLayout from './Pages/User/Appointment/History/AppointmentHistoryLayout';
+import PrescriptionsLayout from './Pages/User/Prescriptions/PrescriptionsLayout';
+import PrescriptionShowing from './Pages/User/Prescriptions/PrescriptionShowing';
 
 
 
@@ -22,15 +26,21 @@ function App() {
     <>
       <Routes>
           <Route path='/' element={<Home/>}/>
-          <Route path='/About' element={<About/>}/>
-          <Route path='/login' element={<Login/>}/>
-          <Route path='/loginmobile' element={<LoginWithMobile/>}/>
-          <Route path='/userregister' element={<RegisterUser/>}/>
-          <Route path='/doctorregister' element={<RegisterDoctor/>}/>
-          <Route path='/forgetpassword' element={<ForgotPassword/>}/>
-          <Route path='/doctorcall' element={<DoctorCall/>}/>
-          <Route path='/patientcall' element={<PatientCall/>}/>
-          <Route path='/AppointmentLayout' element={<AppointmentLayout/>}/>
+          <Route path='About' element={<About/>}/>
+          <Route path='login' element={<Login/>}/>
+          <Route path='loginmobile' element={<LoginWithMobile/>}/>
+          <Route path='userregister' element={<RegisterUser/>}/>
+          <Route path='doctorregister' element={<RegisterDoctor/>}/>
+          <Route path='forgetpassword' element={<ForgotPassword/>}/>
+          <Route path='doctorcall' element={<DoctorCall/>}/>
+          <Route path='patientcall' element={<PatientCall/>}/>
+          <Route path='AppointmentLayout' element={<AppointmentLayout/>}>
+            <Route path='DoctorsShowing' element={<DoctorsShowing/>}/>
+            <Route path='AppointmentHistoryLayout' element={<AppointmentHistoryLayout/>}/>
+          </Route>
+          <Route path='prescriptions' element={<PrescriptionsLayout/>}/>
+          <Route path='prescriptionShowing' element={<PrescriptionShowing/>}/>
+          
           
          
         </Routes>
@@ -42,18 +52,3 @@ function App() {
 }
 
 export default App
-// import React from 'react';
-// import VideoCall from './Pages/Videocall/VideoCall';
-
-// const App: React.FC = () => {
-//   const path = window.location.pathname;
-//   const isDoctor = path === '/doctorcall/';
-
-//   return (
-//     <div>
-//       <VideoCall isDoctor={isDoctor} />
-//     </div>
-//   );
-// };
-
-// export default App;

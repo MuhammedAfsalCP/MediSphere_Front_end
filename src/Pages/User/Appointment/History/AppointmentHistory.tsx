@@ -13,11 +13,14 @@ import {
 
 interface Appointment {
     id: number;
-    doctor: string;
     department: string;
     date: string;
     status: string;
-    time: string;
+    doctor:{
+        first_name:string,
+        department:string
+    },
+    slot: string;
 }
 
 interface AppointmentHistoryProps {
@@ -27,6 +30,7 @@ interface AppointmentHistoryProps {
 }
 
 const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, rowsPerPage, page }) => {
+    console.log(appointments)
     return (
         <>
             {/* Appointment Table */}
@@ -63,8 +67,8 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, r
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {appointments.map((appointment) => (
-                            <TableRow key={appointment.id}>
+                        {appointments?.map((appointment) => (
+                            <TableRow key={appointment?.id}>
                                 <TableCell sx={{ width: '10%' }}>
                                     <img
                                         src="https://via.placeholder.com/30"
@@ -72,8 +76,8 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, r
                                         className="w-6 h-6"
                                     />
                                 </TableCell>
-                                <TableCell sx={{ width: '15%' }}>{appointment.doctor}</TableCell>
-                                <TableCell sx={{ width: '15%' }}>{appointment.department}</TableCell>
+                                <TableCell sx={{ width: '15%' }}>{appointment.doctor.first_name}</TableCell>
+                                <TableCell sx={{ width: '15%' }}>{appointment.doctor.department}</TableCell>
                                 <TableCell sx={{ width: '15%' }}>{appointment.date}</TableCell>
                                 <TableCell sx={{ width: '15%' }}>
                                     <span
@@ -85,7 +89,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, r
                                         {appointment.status}
                                     </span>
                                 </TableCell>
-                                <TableCell sx={{ width: '15%' }}>{appointment.time}</TableCell>
+                                <TableCell sx={{ width: '15%' }}>{appointment.slot}</TableCell>
                                 <TableCell sx={{ width: '15%' }}>
                                     <Button variant="contained" sx={{ mt: 0.5, color: "white" }}>
                                         View More

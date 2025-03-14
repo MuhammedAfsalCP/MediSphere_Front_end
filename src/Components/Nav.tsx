@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -24,21 +24,42 @@ import InfoIcon from '@mui/icons-material/Info';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { useQuery } from '@tanstack/react-query';
+import { TokenInstance } from '../lib/AxiosInstance';
+import { FetchUser } from "../Redux/Slices/AuthSlice";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const Nav: React.FC = () => {
   const theme = useTheme();
   const navigate=useNavigate()
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
 const user=useSelector((state:any)=>state.auth)
-
+const dispatch=useDispatch()
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+  const token = localStorage.getItem("token")
+  const {data, isLoading} = useQuery({
+    queryKey:["fetchuser"],
+    queryFn: async()=>{
+      const response = await TokenInstance.get('/userdetailsget/')
+     
+      return response.data
+    },
+    enabled: !!token
+  })
+  useEffect(()=>{
+  
+   if(data){
+    dispatch(FetchUser(data))
+   }
 
+      
+    
+  },[data])
+ 
   return (
     <AppBar
       position="sticky"
@@ -185,7 +206,7 @@ const user=useSelector((state:any)=>state.auth)
 
           {/* Profile Picture */}
           <IconButton onClick={() => navigate("/profile")} >
-            <Avatar src={user?.user?.profilePicture || "/default-avatar.png"} />
+          <Avatar src={`${apiUrl}${user?.user?.userdetail?.profile_pic}`||"/default-avatar.png"} />
           </IconButton>
         </Box>
 

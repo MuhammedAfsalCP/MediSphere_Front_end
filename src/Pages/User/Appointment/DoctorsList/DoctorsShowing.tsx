@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, TextField, MenuItem } from "@mui/material";
 import DoctorCard from "./DoctorCard"; // Ensure this is correctly imported
+import { useQuery } from "@tanstack/react-query";
+import { AppointmentInstance } from "../../../../lib/AxiosInstance";
+import { useDispatch, useSelector } from "react-redux";
+import { DoctorsFetch } from "../../../../Redux/Slices/DoctorsSlice";
 
 // Define the Doctor type
 interface Doctor {
@@ -10,22 +14,35 @@ interface Doctor {
 }
 
 // Doctor data
-const doctorsData: Doctor[] = [
-    { name: "Dr. John Doe", specialization: "Cardiology", fees: "300" },
-    { name: "Dr. Jane Smith", specialization: "Dermatology", fees: "400" },
-    { name: "Dr. Emily Davis", specialization: "Pediatrics", fees: "500" },
-    { name: "Dr. Robert Wilson", specialization: "Cardiology", fees: "300" },
-];
+
 
 // Specializations
 const specializations: string[] = ["All", "Cardiology", "Dermatology", "Pediatrics"];
 
 const DoctorsShowing: React.FC = () => {
     const [filter, setFilter] = useState<string>("All");
-
-    const filteredDoctors: Doctor[] = filter === "All" 
-        ? doctorsData 
-        : doctorsData.filter((doc) => doc.specialization === filter);
+    const {doctors}=useSelector((state:any)=>state.doctor)
+    const dispatch=useDispatch()
+    const {data, isLoading} = useQuery({
+        queryKey:["fetchdoctors"],
+        queryFn: async()=>{
+          const response = await AppointmentInstance.get('/book_appointment/')
+         
+          return response.data
+        },
+        
+      })
+      useEffect(()=>{
+      
+       if(data){
+        
+        dispatch(DoctorsFetch(data))
+       }
+    
+          
+        
+      },[data])
+      
 
     return (
         <Box sx={{ flex: 1, p: 4 }}>
@@ -48,7 +65,7 @@ const DoctorsShowing: React.FC = () => {
 
             {/* Doctors Flex Container */}
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center" }}>
-                {filteredDoctors.map((doctor, index) => (
+                {doctors?.map((doctor:any, index:any) => (
                     <DoctorCard key={index} doctor={doctor} />
                 ))}
             </Box>

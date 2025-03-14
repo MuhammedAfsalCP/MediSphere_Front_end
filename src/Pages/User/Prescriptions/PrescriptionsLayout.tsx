@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import {
   Box,
-  Typography,
-  Card,
-  CardContent,
-  Divider,
   Button,
   Drawer,
   useTheme,
@@ -32,8 +28,7 @@ const selectedPrescription = {
 
 const PrescriptionsLayout: React.FC = () => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [isShow, setIsShow] = useState(true);
-  const navigate = useNavigate();
+
   const theme = useTheme();
 
   const handleSelectPrescription = (id: number) => {

@@ -35,6 +35,7 @@ const Login: React.FC = () => {
     },
     onSuccess: (data) => {
       console.log(data);
+      localStorage.setItem('token', data.access);
 
       dispatch(LoginSuccess(data))
       navigate('/')

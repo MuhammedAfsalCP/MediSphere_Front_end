@@ -7,6 +7,7 @@ import Footer from '../../Components/Footer';
 import About from '../../Components/About';
 import { keyframes } from '@emotion/react';
 import { fadeIn } from '../../utils/materialui/Materialui';
+import { useNavigate } from 'react-router-dom';
 
 
 const HeroSection = styled(Box)(({ theme }) => ({
@@ -21,7 +22,7 @@ const HeroSection = styled(Box)(({ theme }) => ({
 
 const Home: React.FC = () => {
   const theme = useTheme();
-
+  const navigate=useNavigate()
   return (
     <Box>
       <Nav />
@@ -54,6 +55,7 @@ const Home: React.FC = () => {
                 color="primary"
                 size="large"
                 sx={{ mt: 3, color: 'white' }}
+                onClick={()=>navigate('/AppointmentLayout')}
               >
                 Book an Appointment
               </Button>

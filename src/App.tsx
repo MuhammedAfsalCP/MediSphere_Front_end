@@ -18,6 +18,7 @@ import AppointmentLayout from './Pages/User/Appointment/AppoitmentLayout';
 import AppointmentHistoryLayout from './Pages/User/Appointment/History/AppointmentHistoryLayout';
 import PrescriptionsLayout from './Pages/User/Prescriptions/PrescriptionsLayout';
 import PrescriptionShowing from './Pages/User/Prescriptions/PrescriptionShowing';
+import Booking from './Pages/User/Appointment/BookingSection/Booking';
 
 
 
@@ -40,6 +41,7 @@ function App() {
           </Route>
           <Route path='prescriptions' element={<PrescriptionsLayout/>}/>
           <Route path='prescriptionShowing' element={<PrescriptionShowing/>}/>
+          <Route path='Booking' element={<Booking/>}/>
           
           
          

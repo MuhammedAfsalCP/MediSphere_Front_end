@@ -19,6 +19,7 @@ import AppointmentHistoryLayout from './Pages/User/Appointment/History/Appointme
 import PrescriptionsLayout from './Pages/User/Prescriptions/PrescriptionsLayout';
 import PrescriptionShowing from './Pages/User/Prescriptions/PrescriptionShowing';
 import Booking from './Pages/User/Appointment/BookingSection/Booking';
+import ViewMore from './Pages/User/Appointment/History/Viewmore';
 
 
 
@@ -42,6 +43,7 @@ function App() {
           <Route path='prescriptions' element={<PrescriptionsLayout/>}/>
           <Route path='prescriptionShowing' element={<PrescriptionShowing/>}/>
           <Route path='Booking' element={<Booking/>}/>
+          <Route path='Viewmore' element={<ViewMore/>}/>
           
           
          

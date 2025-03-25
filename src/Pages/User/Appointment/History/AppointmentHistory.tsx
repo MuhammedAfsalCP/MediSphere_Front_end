@@ -10,15 +10,17 @@ import {
     Paper,
     Button,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 interface Appointment {
     id: number;
     department: string;
     date: string;
     status: string;
-    doctor:{
-        first_name:string,
-        department:string
+    doctor: {
+        first_name: string,
+        department: string,
+        id: number
     },
     slot: string;
 }
@@ -31,16 +33,17 @@ interface AppointmentHistoryProps {
 
 const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, rowsPerPage, page }) => {
     console.log(appointments)
+    const navigate = useNavigate()
     return (
         <>
             {/* Appointment Table */}
-            <TableContainer 
+            <TableContainer
                 component={Paper}
                 sx={{
                     borderRadius: '0.5rem',
                     boxShadow: 'none',
                     mb: 4,
-                    
+
                 }}
             >
                 <Table
@@ -82,8 +85,8 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, r
                                 <TableCell sx={{ width: '15%' }}>
                                     <span
                                         className={`px-2 py-1 rounded ${appointment.status === 'Pending'
-                                                ? 'text-yellow-600 bg-yellow-100'
-                                                : 'text-green-600 bg-green-100'
+                                            ? 'text-yellow-600 bg-yellow-100'
+                                            : 'text-green-600 bg-green-100'
                                             }`}
                                     >
                                         {appointment.status}
@@ -91,7 +94,9 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, r
                                 </TableCell>
                                 <TableCell sx={{ width: '15%' }}>{appointment.slot}</TableCell>
                                 <TableCell sx={{ width: '15%' }}>
-                                    <Button variant="contained" sx={{ mt: 0.5, color: "white" }}>
+                                    <Button variant="contained" sx={{ mt: 0.5, color: "white" }} onClick={() =>
+                                        navigate("/Viewmore", { state: { id: appointment.id, date: appointment.date , slot:appointment.slot} })
+                                    }>
                                         View More
                                     </Button>
                                 </TableCell>

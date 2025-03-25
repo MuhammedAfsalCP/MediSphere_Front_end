@@ -8,6 +8,7 @@ import AppointmentHistory from './AppointmentHistory';
 import { fadeIn } from '../../../../utils/materialui/Materialui';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosInstance, TokenInstance } from '../../../../lib/AxiosInstance';
+import { cleanDigitSectionValue } from '@mui/x-date-pickers/internals/hooks/useField/useField.utils';
 
 // Mock data for appointments
 // const appointments = [
@@ -65,12 +66,12 @@ const AppointmentHistoryLayout: React.FC = () => {
             return response.data.History
           },
         })
-        
-        
+       
+       
   const handleChangePage = (event: React.ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage);
   };
-
+  console.log(appointments)
   const paginatedAppointments = appointments?.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 
   return (

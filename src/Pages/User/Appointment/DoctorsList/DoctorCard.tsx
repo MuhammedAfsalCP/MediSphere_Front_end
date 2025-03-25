@@ -1,8 +1,11 @@
 import { Box, Button, CardContent, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import { DoctorCardStyled} from "../../../../utils/materialui/Materialui";
+import { useNavigate } from "react-router-dom";
 const profileurl = import.meta.env.VITE_API_URL;
 const DoctorCard: React.FC<{ doctor: any }> = ({ doctor }) => {
+  console.log(doctor)
+  const navigate=useNavigate()
   return (
     <DoctorCardStyled>
       <CardContent>
@@ -29,7 +32,7 @@ const DoctorCard: React.FC<{ doctor: any }> = ({ doctor }) => {
           Experience: {doctor.years_of_experiance} years
         </Typography>
         <Typography color="textSecondary">Fees: ₹{doctor.consultation_fee}</Typography>
-        <Button variant="contained" sx={{ mt: 2, color: "white" }}>
+        <Button variant="contained" sx={{ mt: 2, color: "white" }} onClick={()=>navigate('/Booking',{ state: doctor.id })}>
           Book Now
         </Button>
       </CardContent>

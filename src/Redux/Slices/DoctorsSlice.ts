@@ -10,8 +10,8 @@ const DoctorsSlice = createSlice({
    initialState,
     reducers: {
         DoctorsFetch:(state,action)=>{
-            console.log(action.payload.doctors)
-            state.doctors=action.payload.doctors;
+            // console.log(action.payload.doctors)
+            // state.doctors=action.payload.doctors;
         }
     }
 })

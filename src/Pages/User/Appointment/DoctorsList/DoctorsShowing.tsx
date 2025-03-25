@@ -17,31 +17,26 @@ interface Doctor {
 
 
 // Specializations
-const specializations: string[] = ["All", "Cardiology", "Dermatology", "Pediatrics"];
+const specializations: string[] = ["All", "Cardiology", "Neurology", "Orthopedics"];
 
 const DoctorsShowing: React.FC = () => {
     const [filter, setFilter] = useState<string>("All");
     const {doctors}=useSelector((state:any)=>state.doctor)
+    console.log(filter)
     const dispatch=useDispatch()
-    const {data, isLoading} = useQuery({
-        queryKey:["fetchdoctors"],
+    const {data, isLoading,error} = useQuery({
+        queryKey:["fetchdoctorss",filter],
         queryFn: async()=>{
-          const response = await AppointmentInstance.get('/book_appointment/')
-         
+          const response = await AppointmentInstance.get(`/doctors_fetching/${filter}/`)
+         console.log(response.data)
+
           return response.data
         },
+        // enabled:!!filte\r
         
       })
-      useEffect(()=>{
+      console.log(error)
       
-       if(data){
-        
-        dispatch(DoctorsFetch(data))
-       }
-    
-          
-        
-      },[data])
       
 
     return (
@@ -65,7 +60,7 @@ const DoctorsShowing: React.FC = () => {
 
             {/* Doctors Flex Container */}
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: "20px", justifyContent: "center" }}>
-                {doctors?.map((doctor:any, index:any) => (
+                {data?.doctors?.map((doctor:any, index:any) => (
                     <DoctorCard key={index} doctor={doctor} />
                 ))}
             </Box>

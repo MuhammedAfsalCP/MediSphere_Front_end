@@ -11,7 +11,7 @@ import {
     Button,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+const profileurl = import.meta.env.VITE_API_URL;
 interface Appointment {
     id: number;
     department: string;
@@ -20,7 +20,8 @@ interface Appointment {
     doctor: {
         first_name: string,
         department: string,
-        id: number
+        id: number,
+        profile_pic:string,
     },
     slot: string;
 }
@@ -55,11 +56,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, r
                     <TableHead>
                         <TableRow sx={{ background: '#e0f7fa' }}>
                             <TableCell sx={{ width: '10%' }}>
-                                <img
-                                    src="https://via.placeholder.com/30"
-                                    alt="Avatar"
-                                    className="w-6 h-6 mr-2 inline-block"
-                                />
+                                
                             </TableCell>
                             <TableCell sx={{ width: '15%' }}>Doctor Name</TableCell>
                             <TableCell sx={{ width: '15%' }}>Department</TableCell>
@@ -74,7 +71,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, r
                             <TableRow key={appointment?.id}>
                                 <TableCell sx={{ width: '10%' }}>
                                     <img
-                                        src="https://via.placeholder.com/30"
+                                        src={`${profileurl}/${appointment.doctor.profile_pic}`}
                                         alt="Avatar"
                                         className="w-6 h-6"
                                     />
@@ -86,7 +83,9 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, r
                                     <span
                                         className={`px-2 py-1 rounded ${appointment.status === 'Pending'
                                             ? 'text-yellow-600 bg-yellow-100'
-                                            : 'text-green-600 bg-green-100'
+                                            : appointment.status === "Cancelled"
+                                                ? "text-gray-600 bg-gray-100"
+                                                : "text-green-600 bg-green-100"
                                             }`}
                                     >
                                         {appointment.status}
@@ -95,7 +94,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({ appointments, r
                                 <TableCell sx={{ width: '15%' }}>{appointment.slot}</TableCell>
                                 <TableCell sx={{ width: '15%' }}>
                                     <Button variant="contained" sx={{ mt: 0.5, color: "white" }} onClick={() =>
-                                        navigate("/Viewmore", { state: { id: appointment.id, date: appointment.date , slot:appointment.slot} })
+                                        navigate("/Viewmore", { state: { id: appointment.id, date: appointment.date, slot: appointment.slot } })
                                     }>
                                         View More
                                     </Button>

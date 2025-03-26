@@ -15,10 +15,14 @@ const AuthSlice = createSlice({
         FetchUser:(state,action)=>{
             
             state.user=action.payload;
-        }
+        },
+        logout: (state) => {
+            state.user=null
+            localStorage.removeItem('token'); // Clear token from localStorage
+          }
     }
 })
 
 export default AuthSlice.reducer
 
-export const {LoginSuccess,FetchUser}= AuthSlice.actions
+export const {LoginSuccess,FetchUser,logout}= AuthSlice.actions

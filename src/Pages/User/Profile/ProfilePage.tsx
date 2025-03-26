@@ -8,30 +8,59 @@ import {
   Avatar,
   Divider,
   TextField,
+  Input,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useFormik } from "formik";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
 import medical from "../../../assets/Frame 215.png";
+import { useQuery } from "@tanstack/react-query";
+import { AxiosInstance, TokenInstance } from "../../../lib/AxiosInstance";
 
 // Dummy data for user
 const dummyUser = {
   first_name: "John",
   last_name: "Doe",
-  age: 19,
+  dateofbirth: 19,
   gender: "Male",
   blood_group: "A+",
   address: "123 Main Street, Springfield, IL 62701, USA",
   email: "test@gmail.com",
   phone: "9876543210",
+  avatar: "https://via.placeholder.com/150.png?text=User",
+  medical_report: medical,
 };
-
+const apiUrl = import.meta.env.VITE_API_URL;
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [userData, setUserData] = useState(dummyUser);
+  const [previewImage, setPreviewImage] = useState<string | null>(dummyUser.avatar);
+  const [medicalPreview, setMedicalPreview] = useState<string | null>(dummyUser.medical_report);
+  const {data:user, isLoading,error} = useQuery({
+    queryKey:["patientdetail"],
+    queryFn: async()=>{
+      const response = await TokenInstance.get(`/patientdetails/`)
+     
 
+      return response.data.User
+    },
+    // enabled:!!filte\r
+    
+  })
+  console.log(user)
+  // Formik setup
+  const formik = useFormik({
+    initialValues: user,
+    onSubmit: (values) => {
+      setIsEditing(false);
+      console.log("Profile saved:", values);
+      // Add API call or other logic to persist changes here
+    },
+  });
+console.log(formik?.values?.first_name)
   // Animation variants for Framer Motion
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -67,13 +96,6 @@ const ProfilePage: React.FC = () => {
       y: 0,
       transition: { duration: 0.7, ease: "easeOut", delay: 0.5 },
     },
-    hover: {
-      rotateX: 10,
-      rotateY: 10,
-      scale: 1.02,
-      boxShadow: "0 8px 20px rgba(0, 0, 0, 0.15)",
-      transition: { duration: 0.3 },
-    },
   };
 
   const buttonVariants = {
@@ -84,12 +106,35 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleEditClick = () => {
-    setIsEditing(!isEditing); // Toggle edit mode
+    setIsEditing(true);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUserData((prev) => ({ ...prev, [name]: value }));
+  const handleSaveClick = () => {
+    formik.handleSubmit();
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+        formik.setFieldValue("avatar", reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleMedicalImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setMedicalPreview(reader.result as string);
+        formik.setFieldValue("medical_report", reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -184,39 +229,75 @@ const ProfilePage: React.FC = () => {
                 position: "relative",
               }}
             >
-              {/* Edit Button */}
-              <motion.div
-                variants={buttonVariants}
-                whileTap="tap"
-                style={{ position: "absolute", top: 16, right: 16 }}
-              >
-                <Button
-                  onClick={handleEditClick}
-                  sx={{
-                    minWidth: 0,
-                    p: 1,
-                    borderRadius: "50%",
-                    background: "linear-gradient(45deg, #4682b4, #87ceeb)",
-                    color: "#fff",
-                  }}
-                >
-                  <EditIcon />
-                </Button>
-              </motion.div>
+              {/* Edit and Save Buttons */}
+              <Box sx={{ position: "absolute", top: 16, right: 16, display: "flex", gap: 1 }}>
+                {!isEditing ? (
+                  <motion.div variants={buttonVariants} whileTap="tap">
+                    <Button
+                      onClick={handleEditClick}
+                      sx={{
+                        minWidth: 0,
+                        p: 1,
+                        borderRadius: "50%",
+                        background: "linear-gradient(45deg, #4682b4, #87ceeb)",
+                        color: "#fff",
+                      }}
+                    >
+                      <EditIcon />
+                    </Button>
+                  </motion.div>
+                ) : (
+                  <motion.div variants={buttonVariants} whileTap="tap">
+                    <Button
+                      onClick={handleSaveClick}
+                      sx={{
+                        minWidth: 0,
+                        p: 1,
+                        borderRadius: "50%",
+                        background: "linear-gradient(45deg, #4682b4, #87ceeb)",
+                        color: "#fff",
+                      }}
+                    >
+                      <SaveIcon />
+                    </Button>
+                  </motion.div>
+                )}
+              </Box>
 
               {/* Avatar */}
               <motion.div variants={avatarVariants}>
                 <Avatar
-                  src="https://via.placeholder.com/150.png?text=User"
-                  alt={`${userData.first_name} ${userData.last_name}`}
+                  src={`${apiUrl}/${ formik?.values?.profile_pic}`}
+                  alt={`${formik?.values?.first_name} ${formik?.values?.last_name}`}
                   sx={{
                     width: 120,
                     height: 120,
                     border: "4px solid #87ceeb",
                     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                    mb: 3,
+                    mb: 2,
                   }}
                 />
+                {isEditing && (
+                  <Box sx={{ textAlign: "center", mb: 2 }}>
+                    <Input
+                      type="file"
+                      inputProps={{ accept: "image/*" }}
+                      onChange={handleImageChange}
+                      sx={{ display: "none" }}
+                      id="avatar-upload"
+                    />
+                    <label htmlFor="avatar-upload">
+                      <Button
+                        variant="outlined"
+                        component="span"
+                        size="small"
+                        sx={{ textTransform: "none" }}
+                      >
+                        Change Picture
+                      </Button>
+                    </label>
+                  </Box>
+                )}
               </motion.div>
 
               {/* Name */}
@@ -231,24 +312,24 @@ const ProfilePage: React.FC = () => {
                 }}
               >
                 {isEditing ? (
-                  <Box sx={{ display: "flex", gap: 2 }}>
+                  <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
                     <TextField
                       name="first_name"
-                      value={userData.first_name}
-                      onChange={handleInputChange}
+                      value={formik.values.first_name}
+                      onChange={formik.handleChange}
                       size="small"
                       variant="outlined"
                     />
                     <TextField
                       name="last_name"
-                      value={userData.last_name}
-                      onChange={handleInputChange}
+                      value={formik.values.last_name}
+                      onChange={formik.handleChange}
                       size="small"
                       variant="outlined"
                     />
                   </Box>
                 ) : (
-                  `${userData.first_name} ${userData.last_name}`
+                  `${formik?.values?.first_name} ${formik?.values?.last_name}`
                 )}
               </Typography>
 
@@ -268,7 +349,7 @@ const ProfilePage: React.FC = () => {
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
-                    gap: 1,
+                    gap: 1.5,
                     color: "#333",
                     border: "1px solid rgba(70, 130, 180, 0.3)",
                     borderRadius: "8px",
@@ -283,57 +364,98 @@ const ProfilePage: React.FC = () => {
                     Personal Details
                   </Typography>
                   <motion.div variants={itemVariants}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
                       <Typography variant="body2" sx={{ fontWeight: 500, color: "#555" }}>
-                        Age:
+                        Date of Birth:
                       </Typography>
                       {isEditing ? (
                         <TextField
                           name="age"
-                          value={userData.age}
-                          onChange={handleInputChange}
+                          value={formik.values.dateofbirth}
+                          onChange={formik.handleChange}
                           size="small"
                           variant="outlined"
                           type="number"
+                          sx={{ width: "100px" }}
                         />
                       ) : (
-                        <Typography variant="body2">{userData.age}</Typography>
+                        <Typography variant="body2">{formik?.values?.date_of_birth}</Typography>
                       )}
                     </Box>
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
                       <Typography variant="body2" sx={{ fontWeight: 500, color: "#555" }}>
                         Gender:
                       </Typography>
                       {isEditing ? (
                         <TextField
                           name="gender"
-                          value={userData.gender}
-                          onChange={handleInputChange}
+                          value={formik?.values.gender}
+                          onChange={formik.handleChange}
                           size="small"
                           variant="outlined"
+                          sx={{ width: "100px" }}
                         />
                       ) : (
-                        <Typography variant="body2">{userData.gender}</Typography>
+                        <Typography variant="body2">{formik?.values?.gender}</Typography>
                       )}
                     </Box>
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
                       <Typography variant="body2" sx={{ fontWeight: 500, color: "#555" }}>
                         Blood Group:
                       </Typography>
                       {isEditing ? (
                         <TextField
                           name="blood_group"
-                          value={userData.blood_group}
-                          onChange={handleInputChange}
+                          value={formik?.values.blood_group}
+                          onChange={formik.handleChange}
                           size="small"
                           variant="outlined"
+                          sx={{ width: "100px" }}
                         />
                       ) : (
-                        <Typography variant="body2">{userData.blood_group}</Typography>
+                        <Typography variant="body2">{formik?.values?.blood_group}</Typography>
+                      )}
+                    </Box>
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: "#555" }}>
+                        Height:
+                      </Typography>
+                      {isEditing ? (
+                        <TextField
+                          name="blood_group"
+                          value={formik?.values.blood_group}
+                          onChange={formik.handleChange}
+                          size="small"
+                          variant="outlined"
+                          sx={{ width: "100px" }}
+                        />
+                      ) : (
+                        <Typography variant="body2">{formik?.values?.blood_group}</Typography>
+                      )}
+                    </Box>
+                  </motion.div>
+                  <motion.div variants={itemVariants}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500, color: "#555" }}>
+                        Weight:
+                      </Typography>
+                      {isEditing ? (
+                        <TextField
+                          name="blood_group"
+                          value={formik?.values.blood_group}
+                          onChange={formik.handleChange}
+                          size="small"
+                          variant="outlined"
+                          sx={{ width: "100px" }}
+                        />
+                      ) : (
+                        <Typography variant="body2">{formik?.values?.blood_group}</Typography>
                       )}
                     </Box>
                   </motion.div>
@@ -345,7 +467,7 @@ const ProfilePage: React.FC = () => {
                     flex: 1,
                     display: "flex",
                     flexDirection: "column",
-                    gap: 1,
+                    gap: 1.5,
                     color: "#333",
                     border: "1px solid rgba(70, 130, 180, 0.3)",
                     borderRadius: "8px",
@@ -360,60 +482,22 @@ const ProfilePage: React.FC = () => {
                     Contact Info
                   </Typography>
                   <motion.div variants={itemVariants}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 2 }}>
+                    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 2 }}>
                       <Typography variant="body2" sx={{ fontWeight: 500, color: "#555" }}>
                         Email:
                       </Typography>
-                      {isEditing ? (
-                        <TextField
-                          name="email"
-                          value={userData.email}
-                          onChange={handleInputChange}
-                          size="small"
-                          variant="outlined"
-                        />
-                      ) : (
-                        <Typography variant="body2">{userData.email}</Typography>
-                      )}
+                      <Typography variant="body2">{formik?.values?.email}</Typography>
                     </Box>
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <Box sx={{ display: "flex", gap: 7 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 7 }}>
                       <Typography variant="body2" sx={{ fontWeight: 500, color: "#555" }}>
                         Phone:
                       </Typography>
-                      {isEditing ? (
-                        <TextField
-                          name="phone"
-                          value={userData.phone}
-                          onChange={handleInputChange}
-                          size="small"
-                          variant="outlined"
-                        />
-                      ) : (
-                        <Typography variant="body2">{userData.phone}</Typography>
-                      )}
+                      <Typography variant="body2">{formik?.values?.phone}</Typography>
                     </Box>
                   </motion.div>
-                  <motion.div variants={itemVariants}>
-                    <Box sx={{ display: "flex", justifyContent: "space-between", gap: 5 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 500, color: "#555" }}>
-                        Address:
-                      </Typography>
-                      {isEditing ? (
-                        <TextField
-                          name="address"
-                          value={userData.address}
-                          onChange={handleInputChange}
-                          size="small"
-                          variant="outlined"
-                          fullWidth
-                        />
-                      ) : (
-                        <Typography variant="body2">{userData.address}</Typography>
-                      )}
-                    </Box>
-                  </motion.div>
+                  
                 </Box>
               </Box>
             </Paper>
@@ -456,7 +540,6 @@ const ProfilePage: React.FC = () => {
 
               <motion.div
                 variants={reportCardVariants}
-                whileHover="hover"
                 style={{ perspective: 1000, flex: 1, display: "flex", flexDirection: "column" }}
               >
                 <Box
@@ -474,18 +557,40 @@ const ProfilePage: React.FC = () => {
                   }}
                 >
                   <motion.img
-                    src={medical}
+                    src={medicalPreview || formik.values.medical_report}
                     alt="Medical Report"
                     style={{
                       objectFit: "fill",
                       borderRadius: "8px",
                       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                      maxWidth: "100%",
                     }}
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
                   />
                 </Box>
+                {isEditing && (
+                  <Box sx={{ textAlign: "center", mt: 2 }}>
+                    <Input
+                      type="file"
+                      inputProps={{ accept: "image/*" }}
+                      onChange={handleMedicalImageChange}
+                      sx={{ display: "none" }}
+                      id="medical-report-upload"
+                    />
+                    <label htmlFor="medical-report-upload">
+                      <Button
+                        variant="outlined"
+                        component="span"
+                        size="small"
+                        sx={{ textTransform: "none" }}
+                      >
+                        Change Medical Report
+                      </Button>
+                    </label>
+                  </Box>
+                )}
               </motion.div>
             </Paper>
           </motion.div>

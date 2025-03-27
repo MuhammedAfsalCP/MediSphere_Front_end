@@ -143,6 +143,8 @@ const { data, isLoading,error } = useQuery({
 
             <ListItem disablePadding>
               <ListItemButton
+              component={Link} // Use Link as the component
+              to="/patientshistory"
               onClick={()=>dispatch(showing())}
                 sx={{
                   px: 3,
@@ -156,7 +158,7 @@ const { data, isLoading,error } = useQuery({
                   <HistoryIcon />
                 </ListItemIcon>
                 <ListItemText
-                  primary="User History"
+                  primary="Patient History"
                   sx={{ color: "#333", fontWeight: 500 }}
                 />
               </ListItemButton>
@@ -170,6 +172,8 @@ const { data, isLoading,error } = useQuery({
           <List sx={{ mb: 2 }}>
             <ListItem disablePadding>
               <ListItemButton
+              component={Link} // Use Link as the component
+              to="/wallet"
               onClick={()=>dispatch(showing())}
                 sx={{
                   px: 3,

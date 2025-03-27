@@ -21,7 +21,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import EventIcon from '@mui/icons-material/Event';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ChatIcon from '@mui/icons-material/Chat';
-
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import HistoryIcon from "@mui/icons-material/History";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -236,23 +237,23 @@ console.log(user)
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton disabled={!user?.user} onClick={() => navigate('/prescriptions')}>
+            <ListItemButton disabled={!user?.user} onClick={() => navigate('/availability')}>
               <ListItemIcon>
-                <DescriptionIcon />
+              <AccessTimeIcon />
               </ListItemIcon>
               <ListItemText primary="Availability" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton disabled={!user?.user}>
+            <ListItemButton disabled={!user?.user} onClick={()=>navigate('/patientshistory')}>
               <ListItemIcon>
-                <ChatIcon />
+              <HistoryIcon />
               </ListItemIcon>
-              <ListItemText primary="User History" />
+              <ListItemText primary="Patient History" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate('/About')}>
+            <ListItemButton onClick={() => navigate('/wallet')}>
               <ListItemIcon>
               <AccountBalanceWalletIcon />
               </ListItemIcon>

@@ -16,22 +16,24 @@ import {
   Avatar,
   List,
 } from '@mui/material';
-import Logo from '../assets/Logo.png'; // Replace with your actual logo import
+import Logo from '../../../assets/Logo.png'; // Replace with your actual logo import
 import HomeIcon from '@mui/icons-material/Home';
 import EventIcon from '@mui/icons-material/Event';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ChatIcon from '@mui/icons-material/Chat';
-import InfoIcon from '@mui/icons-material/Info';
+
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from '@tanstack/react-query';
-import { TokenInstance } from '../lib/AxiosInstance';
-import { FetchUser,logout } from "../Redux/Slices/AuthSlice";
+// import { useQuery } from '@tanstack/react-query';
+// import { TokenInstance } from '../lib/AxiosInstance';
+import { FetchUser,logout } from "../../../Redux/Slices/AuthSlice";
+import { showing } from "../../../Redux/Slices/DashboardSlice";
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
-import ProfileDropdown from '../utils/materialui/Profiledropdown';
+import ProfileDropdown from '../../../utils/materialui/Profiledropdown';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Nav: React.FC = () => {
@@ -41,7 +43,7 @@ const Nav: React.FC = () => {
   const user = useSelector((state: any) => state.auth)
   const dispatch = useDispatch()
   const [dpClick, setDpClick] = useState(false);
-
+console.log(user)
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -155,96 +157,14 @@ const Nav: React.FC = () => {
             gap: 3,
           }}
         >
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              justifyContent: 'center',
-              gap: 3,
-            }}
-          >
-            <Button
-              startIcon={<HomeIcon />}
-              sx={{
-                color: theme.palette.text.primary,
-                '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
-              }}
-              onClick={() => navigate('/')}
-            >
-              Home
-            </Button>
-            <Button
-              startIcon={<EventIcon />}
-              disabled={!user?.user}
-              sx={{
-                color: theme.palette.text.primary,
-                '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
-              }}
-              onClick={() => navigate('/AppointmentLayout')}
-            >
-              Appointment
-            </Button>
-            <Button
-              startIcon={<DescriptionIcon />}
-              disabled={!user?.user}
-              sx={{
-                color: theme.palette.text.primary,
-                '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
-              }}
-              onClick={() => navigate('/prescriptions')}
-            >
-              Prescription
-            </Button>
-            <Button
-              startIcon={<ChatIcon />}
-              disabled={true}
-              sx={{
-                color: theme.palette.text.primary,
-                '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
-              }}
-            >
-              BOT
-            </Button>
-            <Button
-              startIcon={<InfoIcon />}
-              sx={{
-                color: theme.palette.text.primary,
-                '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
-              }}
-              onClick={() => navigate('/About')}
-            >
-              About Us
-            </Button>
-          </Box>
+         
         </Box>
 
         {/* Right Section: Buttons */}
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }} >
           <Box sx={user.user ? { display: 'none' } : { display: { xs: 'none', md: 'flex' }, gap: 2 }}>
-            <Button
-              onClick={() => navigate('/login')}
-              variant="outlined"
-
-              sx={{
-                color: theme.palette.text.primary,
-                borderColor: '#00a2ff',
-                textTransform: 'none',
-                '&:hover': { backgroundColor: '#00a2ff', color: '#fff' },
-              }}
-            >
-              Sign In
-            </Button>
-            <Button
-              onClick={() => navigate('/userregister')}
-              variant="contained"
-              sx={{
-                backgroundColor: '#00a2ff',
-                textTransform: 'none',
-                '&:hover': { backgroundColor: '#007acc' },
-                color: 'white',
-              }}
-            >
-              Register
-            </Button>
+           
+            
           </Box>
 
           <Box sx={user.user ? { display: { xs: 'none', md: 'flex' }, gap: 2 } : { display: 'none' }}>
@@ -300,19 +220,19 @@ const Nav: React.FC = () => {
         {/* Navigation List */}
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate('/')}>
+            <ListItemButton onClick={() =>{ navigate('/dashboard'),dispatch(showing())}}>
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
-              <ListItemText primary="Home" />
+              <ListItemText primary="Dashboard" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton disabled={!user?.user} onClick={() => navigate('/AppointmentLayout')}>
+            <ListItemButton disabled={!user?.user} onClick={() => {navigate('appointments'),dispatch(showing())}}>
               <ListItemIcon>
                 <EventIcon />
               </ListItemIcon>
-              <ListItemText primary="Appointment" />
+              <ListItemText primary="Appointments" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -320,23 +240,23 @@ const Nav: React.FC = () => {
               <ListItemIcon>
                 <DescriptionIcon />
               </ListItemIcon>
-              <ListItemText primary="Prescription" />
+              <ListItemText primary="Availability" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton disabled={true}>
+            <ListItemButton disabled={!user?.user}>
               <ListItemIcon>
                 <ChatIcon />
               </ListItemIcon>
-              <ListItemText primary="BOT" />
+              <ListItemText primary="User History" />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
             <ListItemButton onClick={() => navigate('/About')}>
               <ListItemIcon>
-                <InfoIcon />
+              <AccountBalanceWalletIcon />
               </ListItemIcon>
-              <ListItemText primary="About Us" />
+              <ListItemText primary="Wallet" />
             </ListItemButton>
           </ListItem>
           
@@ -362,7 +282,7 @@ const Nav: React.FC = () => {
             borderTop: "1px solid #e0e0e0",
           }}
         >
-          {user?.user ? (
+          
             <Button
               variant="contained"
               color="error" // Red color for logout
@@ -376,33 +296,7 @@ const Nav: React.FC = () => {
             >
               Logout
             </Button>
-          ) : (
-            <>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{
-                  color: "#fff",
-                  borderColor: "#00a2ff",
-                  textTransform: "none",
-                  "&:hover": { backgroundColor: "#00a2ff", color: "#fff" },
-                }}
-                onClick={() => navigate('/login')} // Replace with sign-in logic
-              >
-                Sign In
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                fullWidth
-                sx={{ textTransform: "none" }}
-                onClick={() => navigate('/userregister')} // Replace with sign-up logic
-              >
-                Sign Up
-              </Button>
-            </>
-          )}
+          
         </Box>
 
       </Drawer>

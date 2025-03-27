@@ -19,7 +19,8 @@ import SaveIcon from "@mui/icons-material/Save";
 import medical from "../../../assets/Frame 215.png";
 import { useQuery } from "@tanstack/react-query";
 import { AxiosInstance, TokenInstance } from "../../../lib/AxiosInstance";
-
+import HeightIcon from "@mui/icons-material/Height"; // Icon for Height
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"; // Icon for Weight
 // Dummy data for user
 const dummyUser = {
   first_name: "John",
@@ -54,13 +55,14 @@ const ProfilePage: React.FC = () => {
   // Formik setup
   const formik = useFormik({
     initialValues: user,
+    enableReinitialize: true,
     onSubmit: (values) => {
       setIsEditing(false);
       console.log("Profile saved:", values);
       // Add API call or other logic to persist changes here
     },
   });
-console.log(formik?.values?.first_name)
+console.log(formik?.values?.date_of_birth)
   // Animation variants for Framer Motion
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -266,39 +268,39 @@ console.log(formik?.values?.first_name)
 
               {/* Avatar */}
               <motion.div variants={avatarVariants}>
-                <Avatar
-                  src={`${apiUrl}/${ formik?.values?.profile_pic}`}
-                  alt={`${formik?.values?.first_name} ${formik?.values?.last_name}`}
-                  sx={{
-                    width: 120,
-                    height: 120,
-                    border: "4px solid #87ceeb",
-                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                    mb: 2,
-                  }}
-                />
-                {isEditing && (
-                  <Box sx={{ textAlign: "center", mb: 2 }}>
-                    <Input
-                      type="file"
-                      inputProps={{ accept: "image/*" }}
-                      onChange={handleImageChange}
-                      sx={{ display: "none" }}
-                      id="avatar-upload"
-                    />
-                    <label htmlFor="avatar-upload">
-                      <Button
-                        variant="outlined"
-                        component="span"
-                        size="small"
-                        sx={{ textTransform: "none" }}
-                      >
-                        Change Picture
-                      </Button>
-                    </label>
-                  </Box>
-                )}
-              </motion.div>
+  <Avatar
+    src={`${apiUrl}/${formik?.values?.profile_pic}`} // Use previewImage first, then fallback to formik value
+    alt={`${formik?.values?.first_name || "User"} ${formik?.values?.last_name || ""}`}
+    sx={{
+      width: 120,
+      height: 120,
+      border: "4px solid #87ceeb",
+      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+      mb: 2,
+    }}
+  />
+  {isEditing && (
+    <Box sx={{ textAlign: "center", mb: 2 }}>
+      <Input
+        type="file"
+        inputProps={{ accept: "image/*" }}
+        onChange={handleImageChange}
+        sx={{ display: "none" }}
+        id="avatar-upload"
+      />
+      <label htmlFor="avatar-upload">
+        <Button
+          variant="outlined"
+          component="span"
+          size="small"
+          sx={{ textTransform: "none" }}
+        >
+          Change Picture
+        </Button>
+      </label>
+    </Box>
+  )}
+</motion.div>
 
               {/* Name */}
               <Typography
@@ -371,11 +373,11 @@ console.log(formik?.values?.first_name)
                       {isEditing ? (
                         <TextField
                           name="age"
-                          value={formik.values.dateofbirth}
+                          value={formik?.values.date_of_birth}
                           onChange={formik.handleChange}
                           size="small"
                           variant="outlined"
-                          type="number"
+                          type="text"
                           sx={{ width: "100px" }}
                         />
                       ) : (
@@ -436,7 +438,7 @@ console.log(formik?.values?.first_name)
                           sx={{ width: "100px" }}
                         />
                       ) : (
-                        <Typography variant="body2">{formik?.values?.blood_group}</Typography>
+                        <Typography variant="body2">{formik?.values?.height} cm</Typography>
                       )}
                     </Box>
                   </motion.div>
@@ -455,7 +457,7 @@ console.log(formik?.values?.first_name)
                           sx={{ width: "100px" }}
                         />
                       ) : (
-                        <Typography variant="body2">{formik?.values?.blood_group}</Typography>
+                        <Typography variant="body2">{formik?.values?.weight} kg</Typography>
                       )}
                     </Box>
                   </motion.div>
@@ -490,11 +492,11 @@ console.log(formik?.values?.first_name)
                     </Box>
                   </motion.div>
                   <motion.div variants={itemVariants}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 7 }}>
+                    <Box sx={{ display: "flex", alignItems: "center",justifyContent:"space-between", gap: 3 }}>
                       <Typography variant="body2" sx={{ fontWeight: 500, color: "#555" }}>
                         Phone:
                       </Typography>
-                      <Typography variant="body2">{formik?.values?.phone}</Typography>
+                      <Typography variant="body2">{formik?.values?.mobile_number}</Typography>
                     </Box>
                   </motion.div>
                   
@@ -557,7 +559,7 @@ console.log(formik?.values?.first_name)
                   }}
                 >
                   <motion.img
-                    src={medicalPreview || formik.values.medical_report}
+                    src={`${apiUrl}/${ formik?.values?.medical_report}`}
                     alt="Medical Report"
                     style={{
                       objectFit: "fill",
@@ -574,6 +576,7 @@ console.log(formik?.values?.first_name)
                   <Box sx={{ textAlign: "center", mt: 2 }}>
                     <Input
                       type="file"
+                      value={formik?.values.medical_report}
                       inputProps={{ accept: "image/*" }}
                       onChange={handleMedicalImageChange}
                       sx={{ display: "none" }}

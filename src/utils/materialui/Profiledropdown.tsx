@@ -80,7 +80,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
       {/* Profile Section */}
       <MenuItem
         component={Link}
-        to="/profile"
+        to="/Profile"
         sx={{
           p: 2,
           display: "flex",

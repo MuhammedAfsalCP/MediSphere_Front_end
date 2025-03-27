@@ -21,6 +21,11 @@ import PrescriptionShowing from './Pages/User/Prescriptions/PrescriptionShowing'
 import Booking from './Pages/User/Appointment/BookingSection/Booking';
 import ViewMore from './Pages/User/Appointment/History/ViewMore';
 import ProfilePage from './Pages/User/Profile/ProfilePage';
+import DashboardLayout from './Pages/Doctor/Layout/DashboardLayout';
+import Dashboard from './Pages/Doctor/Home/DashBoard';
+import Appointments from './Pages/Doctor/Home/Appointments/Appointments';
+import PatientDetails from './Pages/Doctor/Home/Appointments/PatientDetails';
+import Availability from './Pages/Doctor/Home/Availabilities/Availability';
 
 
 
@@ -46,7 +51,12 @@ function App() {
           <Route path='Booking' element={<Booking/>}/>
           <Route path='Viewmore' element={<ViewMore/>}/>
           <Route path='Profile' element={<ProfilePage/>}/>
-          
+          <Route element={<DashboardLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="appointments" element={<Appointments />} />
+          <Route path="patientdetails" element={<PatientDetails />} />
+          <Route path="availability" element={<Availability />} />
+          </Route>
           
          
         </Routes>

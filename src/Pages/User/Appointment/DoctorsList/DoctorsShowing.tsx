@@ -3,8 +3,7 @@ import { Box, TextField, MenuItem } from "@mui/material";
 import DoctorCard from "./DoctorCard"; // Ensure this is correctly imported
 import { useQuery } from "@tanstack/react-query";
 import { AppointmentInstance } from "../../../../lib/AxiosInstance";
-import { useDispatch, useSelector } from "react-redux";
-import { DoctorsFetch } from "../../../../Redux/Slices/DoctorsSlice";
+
 
 // Define the Doctor type
 interface Doctor {
@@ -21,9 +20,9 @@ const specializations: string[] = ["All", "Cardiology", "Neurology", "Orthopedic
 
 const DoctorsShowing: React.FC = () => {
     const [filter, setFilter] = useState<string>("All");
-    const {doctors}=useSelector((state:any)=>state.doctor)
+    
     console.log(filter)
-    const dispatch=useDispatch()
+    
     const {data, isLoading,error} = useQuery({
         queryKey:["fetchdoctorss",filter],
         queryFn: async()=>{

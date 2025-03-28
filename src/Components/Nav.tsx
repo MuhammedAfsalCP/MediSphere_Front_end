@@ -45,31 +45,33 @@ const Nav: React.FC = () => {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  // const token = localStorage.getItem("token")
-  // const { data, isLoading,error } = useQuery({
-  //   queryKey: ["fetchuser"],
-  //   queryFn: async () => {
-  //     const response = await TokenInstance.get('/userdetailsget/')
+  const token = localStorage.getItem("token")
+  const { data, isLoading,error } = useQuery({
+    queryKey: ["fetchuser"],
+    queryFn: async () => {
+      const response = await TokenInstance.get('/userdetailsget/')
 
-  //     return response.data
-  //   },
+      return response.data
+    },
     
-  //   enabled: !!token
+    enabled: !!token
     
-  // })
-  // useEffect(() => {
+  })
+  useEffect(() => {
 
-  //   if (data) {
-  //     dispatch(FetchUser(data))
-  //   }
+    if (data) {
+      dispatch(FetchUser(data))
+    }
     
 
 
 
-  // }, [data])
-  // if(error){
-  //   navigate("/")
-  // }
+  }, [data])
+  // console.log(user)
+  if(error){
+    navigate("/")
+  }
+
   const handleLogout = () => {
     Swal.fire({
       title: "Are you sure?",

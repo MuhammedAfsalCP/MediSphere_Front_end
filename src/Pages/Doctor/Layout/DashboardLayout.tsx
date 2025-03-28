@@ -24,7 +24,7 @@ import { TokenInstance } from "../../../lib/AxiosInstance";
 const DashboardLayout: React.FC = () => {
   const {show} = useSelector((state: any) => state.dash)
   const dispatch =useDispatch()
-console.log(show)
+
 const token = localStorage.getItem("token")
 const user = useSelector((state: any) => state.auth)
 const { data, isLoading,error } = useQuery({
@@ -38,7 +38,7 @@ const { data, isLoading,error } = useQuery({
   enabled: !!token
   
 })
-  console.log(user)
+  
   useEffect(() => {
 
       if (data) {
@@ -49,7 +49,7 @@ const { data, isLoading,error } = useQuery({
   
   
     }, [data])
-    console.log(user)
+    
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       {/* Nav */}

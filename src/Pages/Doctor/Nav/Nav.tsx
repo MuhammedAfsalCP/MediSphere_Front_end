@@ -35,6 +35,8 @@ import { showing } from "../../../Redux/Slices/DashboardSlice";
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import ProfileDropdown from '../../../utils/materialui/Profiledropdown';
+import { TokenInstance } from '../../../lib/AxiosInstance';
+import { useQuery } from '@tanstack/react-query';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Nav: React.FC = () => {
@@ -44,35 +46,33 @@ const Nav: React.FC = () => {
   const user = useSelector((state: any) => state.auth)
   const dispatch = useDispatch()
   const [dpClick, setDpClick] = useState(false);
-console.log(user)
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  // const token = localStorage.getItem("token")
-  // const { data, isLoading,error } = useQuery({
-  //   queryKey: ["fetchuser"],
-  //   queryFn: async () => {
-  //     const response = await TokenInstance.get('/userdetailsget/')
+  const token = localStorage.getItem("token")
+  const { data, isLoading,error } = useQuery({
+    queryKey: ["fetchuser"],
+    queryFn: async () => {
+      const response = await TokenInstance.get('/userdetailsget/')
 
-  //     return response.data
-  //   },
+      return response.data
+    },
     
-  //   enabled: !!token
+    enabled: !!token
     
-  // })
-  // useEffect(() => {
+  })
+  useEffect(() => {
 
-  //   if (data) {
-  //     dispatch(FetchUser(data))
-  //   }
-    
-
-
-
-  // }, [data])
-  // if(error){
-  //   navigate("/")
-  // }
+    if (data) {
+      dispatch(FetchUser(data))
+    }else{
+      navigate("/")
+    }
+  }, [data])
+  if(error){
+    navigate("/")
+  }
   const handleLogout = () => {
     Swal.fire({
       title: "Are you sure?",

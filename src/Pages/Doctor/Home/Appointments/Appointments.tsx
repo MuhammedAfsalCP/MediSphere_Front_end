@@ -18,81 +18,90 @@ import PersonIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion"; // Import Framer Motion
+import { AppointmentInstance } from "../../../../lib/AxiosInstance";
+import { useQuery } from "@tanstack/react-query";
 
 // Updated dummy data with 10 patients
-const appointmentsData = [
-  {
-    id: 1,
-    patientName: "John Doe",
-    date: "18-06-2024",
-    status: "Pending",
-    time: "10:00 TO 11:00 am",
-  },
-  {
-    id: 2,
-    patientName: "Jane Smith",
-    date: "19-06-2024",
-    status: "Completed",
-    time: "11:00 TO 12:00 pm",
-  },
-  {
-    id: 3,
-    patientName: "Emily Johnson",
-    date: "20-06-2024",
-    status: "Completed",
-    time: "09:00 TO 10:00 am",
-  },
-  {
-    id: 4,
-    patientName: "Michael Brown",
-    date: "21-06-2024",
-    status: "Pending",
-    time: "14:00 TO 15:00 pm",
-  },
-  {
-    id: 5,
-    patientName: "Sarah Davis",
-    date: "22-06-2024",
-    status: "Completed",
-    time: "13:00 TO 14:00 pm",
-  },
-  {
-    id: 6,
-    patientName: "David Wilson",
-    date: "23-06-2024",
-    status: "Pending",
-    time: "15:00 TO 16:00 pm",
-  },
-  {
-    id: 7,
-    patientName: "Lisa Anderson",
-    date: "24-06-2024",
-    status: "Completed",
-    time: "10:30 TO 11:30 am",
-  },
-  {
-    id: 8,
-    patientName: "Robert Taylor",
-    date: "25-06-2024",
-    status: "Pending",
-    time: "16:00 TO 17:00 pm",
-  },
-  {
-    id: 9,
-    patientName: "Kelly Martinez",
-    date: "26-06-2024",
-    status: "Completed",
-    time: "08:00 TO 09:00 am",
-  },
-  {
-    id: 10,
-    patientName: "Thomas Lee",
-    date: "27-06-2024",
-    status: "Pending",
-    time: "12:00 TO 13:00 pm",
-  },
-];
-
+// const appointmentsData = [
+//   {
+//     id: 1,
+//     patientName: "John Doe",
+//     date: "18-06-2024",
+//     status: "Pending",
+//     time: "10:00 TO 11:00 am",
+//   },
+//   {
+//     id: 2,
+//     patientName: "Jane Smith",
+//     date: "19-06-2024",
+//     status: "Completed",
+//     time: "11:00 TO 12:00 pm",
+//   },
+//   {
+//     id: 3,
+//     patientName: "Emily Johnson",
+//     date: "20-06-2024",
+//     status: "Completed",
+//     time: "09:00 TO 10:00 am",
+//   },
+//   {
+//     id: 4,
+//     patientName: "Michael Brown",
+//     date: "21-06-2024",
+//     status: "Pending",
+//     time: "14:00 TO 15:00 pm",
+//   },
+//   {
+//     id: 5,
+//     patientName: "Sarah Davis",
+//     date: "22-06-2024",
+//     status: "Completed",
+//     time: "13:00 TO 14:00 pm",
+//   },
+//   {
+//     id: 6,
+//     patientName: "David Wilson",
+//     date: "23-06-2024",
+//     status: "Pending",
+//     time: "15:00 TO 16:00 pm",
+//   },
+//   {
+//     id: 7,
+//     patientName: "Lisa Anderson",
+//     date: "24-06-2024",
+//     status: "Completed",
+//     time: "10:30 TO 11:30 am",
+//   },
+//   {
+//     id: 8,
+//     patientName: "Robert Taylor",
+//     date: "25-06-2024",
+//     status: "Pending",
+//     time: "16:00 TO 17:00 pm",
+//   },
+//   {
+//     id: 9,
+//     patientName: "Kelly Martinez",
+//     date: "26-06-2024",
+//     status: "Completed",
+//     time: "08:00 TO 09:00 am",
+//   },
+//   {
+//     id: 10,
+//     patientName: "Thomas Lee",
+//     date: "27-06-2024",
+//     status: "Pending",
+//     time: "12:00 TO 13:00 pm",
+//   },
+// ];
+interface Details {
+  slot: string;
+  date: string;
+  status:string;
+  patient_first_name:string;
+  patient_last_name:string;
+  id:number; // Optional, based on your API response
+}
 // Framer Motion animation variants for table rows
 const rowVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -108,6 +117,15 @@ const rowVariants = {
 
 const Appointments: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { data: appointmentsData } = useQuery<Details[]>({
+    queryKey: ["fetchpatients"],
+    queryFn: async () => {
+      
+      const response = await AppointmentInstance.get(`appointmenthistory/`);
+      return response.data.history;
+    },
+    
+  });
 
   const handleSearch = () => {
     // Filter appointmentsData based on searchTerm (placeholder logic)
@@ -212,7 +230,7 @@ const Appointments: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {appointmentsData.map((row, index) => (
+            {appointmentsData?.map((row, index) => (
               <TableRow
                 key={row.id}
                 component={motion.tr} // Use motion.tr for animation
@@ -224,7 +242,7 @@ const Appointments: React.FC = () => {
                 <TableCell sx={{ py: 1 }}>
                   <PersonIcon sx={{ color: "#666" }} />
                 </TableCell>
-                <TableCell sx={{ py: 1 }}>{row.patientName}</TableCell>
+                <TableCell sx={{ py: 1 }}>{row.patient_first_name} {row.patient_last_name}</TableCell>
                 <TableCell sx={{ py: 1 }}>{row.date}</TableCell>
                 <TableCell sx={{ py: 1 }}>
                   <Typography
@@ -236,7 +254,7 @@ const Appointments: React.FC = () => {
                     {row.status}
                   </Typography>
                 </TableCell>
-                <TableCell sx={{ py: 1 }}>{row.time}</TableCell>
+                <TableCell sx={{ py: 1 }}>{row.slot}</TableCell>
                 <TableCell sx={{ py: 1 }}>
                   <Button
                     component={Link}
@@ -264,47 +282,7 @@ const Appointments: React.FC = () => {
       </TableContainer>
 
       {/* Pagination Buttons (Display Only) */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          gap: 2,
-          mt: 3,
-        }}
-      >
-        <Button
-          variant="outlined"
-          sx={{
-            textTransform: "none",
-            fontSize: { xs: "0.8rem", md: "0.875rem" },
-            padding: { xs: "4px 12px", md: "6px 16px" },
-            borderColor: "#4682B4",
-            color: "#4682B4",
-            "&:hover": {
-              borderColor: "#5a9bd4",
-              backgroundColor: "#f0f8ff",
-            },
-          }}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outlined"
-          sx={{
-            textTransform: "none",
-            fontSize: { xs: "0.8rem", md: "0.875rem" },
-            padding: { xs: "4px 12px", md: "6px 16px" },
-            borderColor: "#4682B4",
-            color: "#4682B4",
-            "&:hover": {
-              borderColor: "#5a9bd4",
-              backgroundColor: "#f0f8ff",
-            },
-          }}
-        >
-          Next
-        </Button>
-      </Box>
+      
     </Box>
   );
 };

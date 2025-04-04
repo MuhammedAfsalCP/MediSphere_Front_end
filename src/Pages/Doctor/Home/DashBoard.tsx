@@ -21,6 +21,8 @@ import {
   Line,
 } from "recharts";
 import Nav from "../Nav/Nav";
+import { useQuery } from "@tanstack/react-query";
+import { AppointmentInstance } from "../../../lib/AxiosInstance";
 
 // Dummy data for charts
 const revenueData = [
@@ -57,6 +59,20 @@ const bookingsData = [
 const COLORS = ["#D3E5F5", "#87CEEB", "#4682B4"];
 
 const Dashboard: React.FC = () => {
+
+  const { data: bookingTime } = useQuery({
+    queryKey: ["dashboard_bookint_time"],
+    queryFn: async () => {
+      
+      const response = await AppointmentInstance.get(`bookingtimes/`);
+      return response.data.Booking_Times;
+    }
+  });
+  const bookingTimeData = [
+    { name: "Morning", value: bookingTime?.morning_bookings },
+    { name: "Afternoon", value: bookingTime?.afternoon_bookings },
+    { name: "Evening", value: bookingTime?.evening_bookings},
+  ];
   return (
     <Box
       sx={{
@@ -99,7 +115,7 @@ const Dashboard: React.FC = () => {
                 variant="h4"
                 sx={{ color: "#333", fontWeight: 700, fontSize: "1.5rem" }}
               >
-                IDR 7,852,000
+                IND 7,852,000
               </Typography>
               <Typography
                 variant="body2"
@@ -160,7 +176,7 @@ const Dashboard: React.FC = () => {
               variant="body2"
               sx={{ color: "#666", mb: 1, fontSize: "0.75rem" }}
             >
-              From 1-6 Dec, 2020
+              Last One Month
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               <PieChart width={150} height={150}>
@@ -195,7 +211,7 @@ const Dashboard: React.FC = () => {
                   variant="h6"
                   sx={{ color: COLORS[index], fontWeight: 700, fontSize: "1rem" }}
                 >
-                  {entry.value}%
+                  {entry.value}
                 </Typography>
               </Box>
             ))}

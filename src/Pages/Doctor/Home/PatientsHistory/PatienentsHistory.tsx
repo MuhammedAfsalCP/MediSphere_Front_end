@@ -19,20 +19,20 @@ import PersonIcon from "@mui/icons-material/Person";
 import { styled } from "@mui/material/styles";
 import { motion } from "framer-motion";
 import { forwardRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { AppointmentInstance } from "../../../../lib/AxiosInstance";
 
 // Sample data for 10 patients' history
-const userHistoryData = [
-  { name: "John Doe", age: 20, gender: "Male", visitedTimes: 4 },
-  { name: "Jane Smith", age: 21, gender: "Female", visitedTimes: 2 },
-  { name: "Michael Brown", age: 22, gender: "Male", visitedTimes: 5 },
-  { name: "Emily Davis", age: 19, gender: "Female", visitedTimes: 3 },
-  { name: "David Wilson", age: 23, gender: "Male", visitedTimes: 6 },
-  { name: "Sarah Johnson", age: 20, gender: "Female", visitedTimes: 1 },
-  { name: "James Lee", age: 24, gender: "Male", visitedTimes: 7 },
-  { name: "Laura Adams", age: 21, gender: "Female", visitedTimes: 4 },
-  { name: "Robert Taylor", age: 22, gender: "Male", visitedTimes: 2 },
-  { name: "Emma White", age: 20, gender: "Female", visitedTimes: 3 },
-];
+interface Details {
+  first_name: string;
+  last_name:string;
+  profile_pic:string;
+  date_of_birth: string;
+  gender: string;
+  visited_times?: number;
+  
+}
+
 
 // Extend Material-UI TableRow props to include Framer Motion props
 interface MotionTableRowProps extends TableRowProps {
@@ -98,10 +98,20 @@ const PatienentsHistory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   // Filter patients based on search term
-  const filteredData = userHistoryData.filter((user) =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase())
+  
+  const { data: userHistoryData } = useQuery<Details[]>({
+    queryKey: ["fetchusershistory"],
+    queryFn: async () => {
+      
+      const response = await AppointmentInstance.get(`allhistory/`);
+      return response.data.History;
+    }
+  });
+  console.log(userHistoryData)
+  const filteredData = userHistoryData?.filter((user) =>
+    user.first_name.toLowerCase().includes(searchTerm.toLowerCase())||
+    user.last_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   // Animation variants for table rows
   const rowVariants = {
     hidden: { opacity: 0, x: -20 },
@@ -182,8 +192,8 @@ const PatienentsHistory: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.length > 0 ? (
-              filteredData.map((user, index) => (
+            {filteredData && filteredData.length > 0 ? (
+              filteredData?.map((user, index) => (
                 <StyledTableRow
                   key={index}
                   variants={rowVariants}
@@ -196,10 +206,10 @@ const PatienentsHistory: React.FC = () => {
                       <PersonIcon sx={{ color: "#666" }} />
                     </Avatar>
                   </StyledTableCell>
-                  <StyledTableCell>{user.name}</StyledTableCell>
-                  <StyledTableCell align="center">{user.age}</StyledTableCell>
+                  <StyledTableCell>{user.first_name} {user.last_name}</StyledTableCell>
+                  <StyledTableCell align="center">{user.date_of_birth}</StyledTableCell>
                   <StyledTableCell align="center">{user.gender}</StyledTableCell>
-                  <StyledTableCell align="center">{user.visitedTimes}</StyledTableCell>
+                  <StyledTableCell align="center">{user.visited_times}</StyledTableCell>
                 </StyledTableRow>
               ))
             ) : (
@@ -216,16 +226,7 @@ const PatienentsHistory: React.FC = () => {
       </TableContainer>
 
       {/* Dummy Pagination Buttons */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mt: 3,
-        }}
-      >
-        <PaginationButton>Previous</PaginationButton>
-        <PaginationButton>Next</PaginationButton>
-      </Box>
+      
     </Box>
   );
 };

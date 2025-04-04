@@ -113,26 +113,44 @@
 
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import VideoCall from "./VideoCall";
-
+import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { AppointmentInstance } from "../../lib/AxiosInstance";
+interface Details {
+ email:string;
+ slot:string;
+ date:string;
+  
+}
 const DoctorPage = () => {
-  const [email, setEmail] = useState("");
-  const [date, setDate] = useState("");
-  const [slot, setSlot] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [date, setDate] = useState("");
+  // const [slot, setSlot] = useState("");
   const [roomId, setRoomId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
-
-  const createRoom = () => {
-    if (!email || !date || !slot) {
-      setErrorMessage("Please fill in all fields.");
-      return;
-    }
-    const newRoomId = crypto.randomUUID();
-    setRoomId(newRoomId);
-    setErrorMessage("");
-  };
-
+  const location=useLocation()
+  const id=location.state || null;
+  console.log(id)
+  
+  const { data: appointmentDetils } = useQuery<Details>({
+    queryKey: ["fetchdetails"],
+    queryFn: async () => {
+      
+      const response = await AppointmentInstance.get(`doctorcall/${id}/`);
+      return response.data.Details;
+    },
+    enabled:!!id
+    
+  });
+ useEffect(()=>{
+  const newRoomId = crypto.randomUUID();
+  setRoomId(newRoomId);
+  
+ },[])
+ console.log(roomId)
+ console.log(appointmentDetils?.date)
   const handleVideoCallUpdate = (data: { meetLink?: string; error?: string }) => {
     if (data.error) {
       setErrorMessage(data.error);
@@ -142,43 +160,18 @@ const DoctorPage = () => {
 
   return (
     <div>
-      <h1>Doctor Video Call</h1>
-      {!roomId ? (
-        <>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-          />
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-          <input
-            type="text"
-            value={slot}
-            onChange={(e) => setSlot(e.target.value)}
-            placeholder="Enter slot (e.g., 8:00)"
-          />
-          <button onClick={createRoom}>Create Video Call Room</button>
-        </>
+      {roomId ? (
+        <VideoCall
+          roomId={roomId}  // TypeScript knows `roomId` is `string` here
+          role="doctor"
+          email={appointmentDetils?.email}
+          date={appointmentDetils?.date}
+          slot={appointmentDetils?.slot}
+          onUpdate={handleVideoCallUpdate}
+        />
       ) : (
-        <>
-          <p>Room ID: {roomId}</p>
-          <VideoCall
-            roomId={roomId}
-            role="doctor"
-            email={email}
-            date={date}
-            slot={slot}
-            onUpdate={handleVideoCallUpdate}
-          />
-          <button onClick={() => setRoomId(null)}>Leave Room</button>
-        </>
+        <p>Loading room...</p>  // Or any fallback UI
       )}
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
     </div>
   );
 };

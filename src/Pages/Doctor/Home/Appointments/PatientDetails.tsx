@@ -6,21 +6,25 @@ import {
   Paper,
   Button,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"; // Import Framer Motion
 import MedicalReport from "../../../../assets/Frame 215.png";
 import Prescription from "./Prescription";
-
+import { useQuery } from "@tanstack/react-query";
+import { AppointmentInstance } from "../../../../lib/AxiosInstance";
+const profileurl = import.meta.env.VITE_API_URL;
 // Sample patient data (you can replace this with dynamic data)
-const patientData = {
-  name: "John Doe",
-  age: 19,
-  gender: "Male",
-  bloodGroup: "A+",
-  address: "123 Main Street, Springfield, IL, 62701, USA",
-  email: "test@gmail.com",
-  phone: "9876543210",
-};
+// const patientData = {
+//   name: "John Doe",
+//   age: 19,
+//   gender: "Male",
+//   bloodGroup: "A+",
+//   address: "123 Main Street, Springfield, IL, 62701, USA",
+//   email: "test@gmail.com",
+//   phone: "9876543210",
+// };
+
+
 
 // Animation variants for sections
 const sectionVariants = {
@@ -47,8 +51,38 @@ const buttonVariants = {
     },
   },
 };
-
+interface Details {
+  id:number;
+  profile_pic:string;
+  first_name: string;
+  last_name: string;
+  gender:string;
+  status:string;
+  blood_group:string;
+  weight:string;
+  height:string;
+  email:string;
+  mobile_number:string;
+  medical_report:string;
+  date_of_birth:string;
+  room_created:false;
+  
+}
 const PatientDetails: React.FC = () => {
+  const location = useLocation();
+  const id2 = location.state || null;
+  const navigate=useNavigate()
+  const { data: patientData } = useQuery<Details>({
+    queryKey: ["fetchpatientsviewmore"],
+    queryFn: async () => {
+      
+      const response = await AppointmentInstance.get(`appointmenthistoryviewmore/${id2}/`);
+      return response.data.history;
+    },
+    enabled:!!id2
+    
+  });
+//  console.log(patientData)
   return (
     <Box
       sx={{
@@ -106,7 +140,7 @@ const PatientDetails: React.FC = () => {
               fontWeight: 500,
             }}
           >
-            <strong>Name:</strong> {patientData.name}
+            <strong>Name:</strong> {patientData?.first_name} {patientData?.last_name}
           </Typography>
           <Typography
             sx={{
@@ -116,7 +150,7 @@ const PatientDetails: React.FC = () => {
               fontWeight: 500,
             }}
           >
-            <strong>Age:</strong> {patientData.age}
+            <strong>Date of Birth:</strong> {patientData?.date_of_birth}
           </Typography>
           <Typography
             sx={{
@@ -126,7 +160,7 @@ const PatientDetails: React.FC = () => {
               fontWeight: 500,
             }}
           >
-            <strong>Gender:</strong> {patientData.gender}
+            <strong>Gender:</strong> {patientData?.gender}
           </Typography>
           <Typography
             sx={{
@@ -136,7 +170,7 @@ const PatientDetails: React.FC = () => {
               fontWeight: 500,
             }}
           >
-            <strong>Blood Group:</strong> {patientData.bloodGroup}
+            <strong>Blood Group:</strong> {patientData?.blood_group}
           </Typography>
           <Typography
             sx={{
@@ -145,7 +179,16 @@ const PatientDetails: React.FC = () => {
               fontWeight: 500,
             }}
           >
-            <strong>Address:</strong> {patientData.address}
+            <strong>Weight:</strong> {patientData?.weight}
+          </Typography>
+          <Typography
+            sx={{
+              color: "#666",
+              fontSize: { xs: "0.9rem", md: "1rem" },
+              fontWeight: 500,
+            }}
+          >
+            <strong>Height:</strong> {patientData?.height}
           </Typography>
         </Paper>
 
@@ -192,7 +235,7 @@ const PatientDetails: React.FC = () => {
                 fontWeight: 500,
               }}
             >
-              <strong>Email:</strong> {patientData.email}
+              <strong>Email:</strong> {patientData?.email}
             </Typography>
             <Typography
               sx={{
@@ -201,7 +244,7 @@ const PatientDetails: React.FC = () => {
                 fontWeight: 500,
               }}
             >
-              <strong>Phone:</strong> {patientData.phone}
+              <strong>Phone:</strong> {patientData?.mobile_number}
             </Typography>
           </Paper>
           <Button
@@ -209,9 +252,10 @@ const PatientDetails: React.FC = () => {
             variants={buttonVariants}
             initial="hidden"
             animate="visible"
+            onClick={()=>navigate('/doctorcall',{state:patientData?.id})}
             whileHover={{ scale: 1.05 }} // Slight scale on hover
             whileTap={{ scale: 0.95 }} // Slight scale down on tap
-            sx={{
+            sx={patientData?.room_created ? {display:"none"}:{
               backgroundColor: "#2ecc71",
               color: "#fff",
               "&:hover": { backgroundColor: "#27ae60" },
@@ -219,14 +263,15 @@ const PatientDetails: React.FC = () => {
               fontSize: { xs: "0.9rem", md: "1rem" },
               padding: { xs: "6px 12px", md: "8px 16px" },
               borderRadius: "8px",
+              
             }}
           >
-            <Link
-              to="/create-session"
+            <p
+              
               style={{ color: "inherit", textDecoration: "none" }}
             >
               Create Session
-            </Link>
+            </p>
           </Button>
         </Box>
       </Box>
@@ -270,7 +315,7 @@ const PatientDetails: React.FC = () => {
             Medical Report
           </Typography>
           <img
-            src={MedicalReport}
+            src={`${profileurl}/media/${patientData?.medical_report}`}
             alt="Medical Report"
             style={{
               width: "100%",

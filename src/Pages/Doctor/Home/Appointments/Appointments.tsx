@@ -16,91 +16,21 @@ import {
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import SearchIcon from "@mui/icons-material/Search";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"; // Import Framer Motion
 import { AppointmentInstance } from "../../../../lib/AxiosInstance";
 import { useQuery } from "@tanstack/react-query";
+const profileurl = import.meta.env.VITE_API_URL;
 
-// Updated dummy data with 10 patients
-// const appointmentsData = [
-//   {
-//     id: 1,
-//     patientName: "John Doe",
-//     date: "18-06-2024",
-//     status: "Pending",
-//     time: "10:00 TO 11:00 am",
-//   },
-//   {
-//     id: 2,
-//     patientName: "Jane Smith",
-//     date: "19-06-2024",
-//     status: "Completed",
-//     time: "11:00 TO 12:00 pm",
-//   },
-//   {
-//     id: 3,
-//     patientName: "Emily Johnson",
-//     date: "20-06-2024",
-//     status: "Completed",
-//     time: "09:00 TO 10:00 am",
-//   },
-//   {
-//     id: 4,
-//     patientName: "Michael Brown",
-//     date: "21-06-2024",
-//     status: "Pending",
-//     time: "14:00 TO 15:00 pm",
-//   },
-//   {
-//     id: 5,
-//     patientName: "Sarah Davis",
-//     date: "22-06-2024",
-//     status: "Completed",
-//     time: "13:00 TO 14:00 pm",
-//   },
-//   {
-//     id: 6,
-//     patientName: "David Wilson",
-//     date: "23-06-2024",
-//     status: "Pending",
-//     time: "15:00 TO 16:00 pm",
-//   },
-//   {
-//     id: 7,
-//     patientName: "Lisa Anderson",
-//     date: "24-06-2024",
-//     status: "Completed",
-//     time: "10:30 TO 11:30 am",
-//   },
-//   {
-//     id: 8,
-//     patientName: "Robert Taylor",
-//     date: "25-06-2024",
-//     status: "Pending",
-//     time: "16:00 TO 17:00 pm",
-//   },
-//   {
-//     id: 9,
-//     patientName: "Kelly Martinez",
-//     date: "26-06-2024",
-//     status: "Completed",
-//     time: "08:00 TO 09:00 am",
-//   },
-//   {
-//     id: 10,
-//     patientName: "Thomas Lee",
-//     date: "27-06-2024",
-//     status: "Pending",
-//     time: "12:00 TO 13:00 pm",
-//   },
-// ];
 interface Details {
+  id: number;
   slot: string;
   date: string;
-  status:string;
-  patient_first_name:string;
-  patient_last_name:string;
-  id:number; // Optional, based on your API response
+  status: string;
+  patient_first_name: string;
+  patient_last_name: string;
+  patient_image: string;
+
 }
 // Framer Motion animation variants for table rows
 const rowVariants = {
@@ -117,16 +47,17 @@ const rowVariants = {
 
 const Appointments: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate()
   const { data: appointmentsData } = useQuery<Details[]>({
     queryKey: ["fetchpatients"],
     queryFn: async () => {
-      
+
       const response = await AppointmentInstance.get(`appointmenthistory/`);
       return response.data.history;
     },
-    
-  });
 
+  });
+  // console.log(appointmentsData)
   const handleSearch = () => {
     // Filter appointmentsData based on searchTerm (placeholder logic)
     console.log("Searching for:", searchTerm);
@@ -240,7 +171,8 @@ const Appointments: React.FC = () => {
                 custom={index} // Pass index for staggered animation
               >
                 <TableCell sx={{ py: 1 }}>
-                  <PersonIcon sx={{ color: "#666" }} />
+                  <img src={`${profileurl}/media/${row.patient_image}`} alt="Avatar"
+                    className="w-7 h-7" />
                 </TableCell>
                 <TableCell sx={{ py: 1 }}>{row.patient_first_name} {row.patient_last_name}</TableCell>
                 <TableCell sx={{ py: 1 }}>{row.date}</TableCell>
@@ -257,8 +189,9 @@ const Appointments: React.FC = () => {
                 <TableCell sx={{ py: 1 }}>{row.slot}</TableCell>
                 <TableCell sx={{ py: 1 }}>
                   <Button
-                    component={Link}
-                    to="/patientdetails" // Placeholder for navigation
+                    // component={Link}
+                    // to="/patientdetails" // Placeholder for navigation
+                    onClick={() => navigate('/patientdetails', { state: row.id })}
                     variant="contained"
                     sx={{
                       textTransform: "none",
@@ -282,7 +215,7 @@ const Appointments: React.FC = () => {
       </TableContainer>
 
       {/* Pagination Buttons (Display Only) */}
-      
+
     </Box>
   );
 };

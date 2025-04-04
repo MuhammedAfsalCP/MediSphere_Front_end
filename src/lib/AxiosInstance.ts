@@ -1,6 +1,7 @@
 import axios from 'axios'
 const UserSerivceUrl = import.meta.env.VITE_API_URL;
 const AppontmentSerivceUrl = import.meta.env.VITE_API_URL2;
+// const VideoServiceUrl = import.meta.env.VITE_API_URL3;
 const token = localStorage.getItem("token");
 
 export const AxiosInstance=axios.create({
@@ -34,3 +35,4 @@ export const AppointmentInstance=axios.create({
     }
 
 })
+

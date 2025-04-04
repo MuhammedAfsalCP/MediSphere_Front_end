@@ -11,7 +11,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import EventIcon from "@mui/icons-material/Event"; // Icon for date
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import dayjs from "dayjs";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AppointmentInstance } from "../../../../lib/AxiosInstance";
 import Swal from 'sweetalert2'
@@ -211,7 +211,7 @@ const ViewMore: React.FC = () => {
   });
 
   const doctorid = doctor?.id;
-
+  console.log(doctor)
   const { data: slots } = useQuery({
     queryKey: ["fetchslots2", doctorid, date],
     queryFn: async () => {
@@ -221,9 +221,9 @@ const ViewMore: React.FC = () => {
     },
     enabled: !!id && !!date,
   });
-
+  const navigate=useNavigate()
   const handleJoin = () => {
-    alert("Join functionality to be implemented!");
+    navigate('/patientcall',{state:doctor?.meet_link})
   };
   const { mutate: cancelmutate } = useMutation({
     mutationFn: async (values: { id: number }) => {

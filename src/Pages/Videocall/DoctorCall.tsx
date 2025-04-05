@@ -122,6 +122,8 @@ interface Details {
  email:string;
  slot:string;
  date:string;
+ amount:string;
+ room_id :number
   
 }
 const DoctorPage = () => {
@@ -144,6 +146,7 @@ const DoctorPage = () => {
     enabled:!!id
     
   });
+  console.log(appointmentDetils)
  useEffect(()=>{
   const newRoomId = crypto.randomUUID();
   setRoomId(newRoomId);
@@ -167,6 +170,8 @@ const DoctorPage = () => {
           email={appointmentDetils?.email}
           date={appointmentDetils?.date}
           slot={appointmentDetils?.slot}
+          amount={appointmentDetils?.amount}
+          table_id={appointmentDetils?.room_id}
           onUpdate={handleVideoCallUpdate}
         />
       ) : (

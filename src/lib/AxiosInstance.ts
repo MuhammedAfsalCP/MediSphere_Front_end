@@ -1,6 +1,7 @@
 import axios from 'axios'
 const UserSerivceUrl = import.meta.env.VITE_API_URL;
 const AppontmentSerivceUrl = import.meta.env.VITE_API_URL2;
+const VideoCallSerivceUrl = import.meta.env.VITE_API_URL3;
 // const VideoServiceUrl = import.meta.env.VITE_API_URL3;
 const token = localStorage.getItem("token");
 
@@ -36,3 +37,14 @@ export const AppointmentInstance=axios.create({
 
 })
 
+
+
+export const VideoCallInstance=axios.create({
+    baseURL:VideoCallSerivceUrl,
+    // withCredentials: true,
+    headers:{
+        "Content-Type":"application/json",
+        Authorization: `Bearer ${token}`,
+    }
+
+})

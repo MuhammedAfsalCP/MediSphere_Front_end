@@ -25,39 +25,15 @@ import { useQuery } from "@tanstack/react-query";
 import { AppointmentInstance } from "../../../lib/AxiosInstance";
 
 // Dummy data for charts
-const revenueData = [
-  { day: "01", last8Days: 2, lastWeek: 1 },
-  { day: "02", last8Days: 3, lastWeek: 2 },
-  { day: "03", last8Days: 1, lastWeek: 3 },
-  { day: "04", last8Days: 4, lastWeek: 2 },
-  { day: "05", last8Days: 3, lastWeek: 1 },
-  { day: "06", last8Days: 2, lastWeek: 3 },
-  { day: "07", last8Days: 5, lastWeek: 2 },
-  { day: "08", last8Days: 3, lastWeek: 1 },
-  { day: "09", last8Days: 2, lastWeek: 1 },
-  { day: "10", last8Days: 4, lastWeek: 2 },
-  { day: "11", last8Days: 3, lastWeek: 1 },
-  { day: "12", last8Days: 2, lastWeek: 3 },
-];
 
-const bookingTimeData = [
-  { name: "Morning", value: 28 },
-  { name: "Afternoon", value: 40 },
-  { name: "Evening", value: 32 },
-];
-
-const bookingsData = [
-  { day: "01", last6Days: 500, lastWeek: 600 },
-  { day: "02", last6Days: 400, lastWeek: 500 },
-  { day: "03", last6Days: 600, lastWeek: 400 },
-  { day: "04", last6Days: 300, lastWeek: 500 },
-  { day: "05", last6Days: 700, lastWeek: 600 },
-  { day: "06", last6Days: 500, lastWeek: 400 },
-];
 
 // Colors for the donut chart
 const COLORS = ["#D3E5F5", "#87CEEB", "#4682B4"];
-
+export interface WeeklyGraphEntry {
+  date: string;
+  appointments: number;
+  earnings: string;
+}
 const Dashboard: React.FC = () => {
 
   const { data: bookingTime } = useQuery({
@@ -68,11 +44,34 @@ const Dashboard: React.FC = () => {
       return response.data.Booking_Times;
     }
   });
+  const { data: weekly_earnings } = useQuery({
+    queryKey: ["weekly_earnings"],
+    queryFn: async () => {
+      
+      const response = await AppointmentInstance.get(`weekly_earnings/`);
+      return response.data
+      ;
+    }
+  });
+  console.log(weekly_earnings)
   const bookingTimeData = [
     { name: "Morning", value: bookingTime?.morning_bookings },
     { name: "Afternoon", value: bookingTime?.afternoon_bookings },
     { name: "Evening", value: bookingTime?.evening_bookings},
   ];
+  const revenueData = weekly_earnings?.weekly_graph?.map((entry:WeeklyGraphEntry, i:number) => ({
+    day: entry.date, // Full date (e.g., "2025-03-31")
+    Bookings: entry.appointments,
+    earnings:entry.earnings,
+    index: i + 1 // Sequential index starting at 1 (1, 2, 3, 4, 5, 6, 7)
+  }));
+
+  const bookingsData = weekly_earnings?.weekly_graph?.map((entry:WeeklyGraphEntry, i:number) => ({
+    day: i + 1, // Sequential index (1 to 7) for X-axis
+    last10Days: entry.appointments, // Current week's appointments
+    // lastWeek: 0 // No data for last week yet
+  }));
+  console.log(revenueData)
   return (
     <Box
       sx={{
@@ -115,37 +114,34 @@ const Dashboard: React.FC = () => {
                 variant="h4"
                 sx={{ color: "#333", fontWeight: 700, fontSize: "1.5rem" }}
               >
-                IND 7,852,000
+               IND {weekly_earnings?.Weekly_Earnings}
               </Typography>
               <Typography
                 variant="body2"
                 sx={{ color: "green", fontWeight: 500, fontSize: "0.75rem" }}
               >
-                ↑ 2.1% vs last week
+               last 10 Days
               </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "#666", fontSize: "0.75rem" }}
-              >
-                Booking from 1-12 Dec, 2020
-              </Typography>
+              
             </Box>
             
           </Box>
           <Box sx={{ overflowX: "auto", width: "100%" }}>
-            <BarChart
+          <BarChart
               width={500} // Reduced width to fit better
               height={200} // Reduced height
               data={revenueData}
               margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" tick={{ fontSize: 12 }} />
+              <XAxis dataKey="index" tick={{ fontSize: 12 }} />
               <YAxis tick={{ fontSize: 12 }} />
-              <Tooltip />
+              <Tooltip
+        formatter={(value, name) => [value, name]}
+        labelFormatter={(label) => revenueData[label - 1]?.day || label} // Show full date in tooltip
+      />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Bar dataKey="last8Days" fill="#4682B4" name="Last 8 days" />
-              <Bar dataKey="lastWeek" fill="#D3E5F5" name="Last Week" />
+              <Bar dataKey="earnings" fill="#4682B4" name="Bookings" />
             </BarChart>
           </Box>
         </Paper>
@@ -246,19 +242,19 @@ const Dashboard: React.FC = () => {
                 variant="h4"
                 sx={{ color: "#333", fontWeight: 700, fontSize: "1.5rem" }}
               >
-                2,568
+                {weekly_earnings?.weekly_total_appointments}
               </Typography>
               <Typography
                 variant="body2"
                 sx={{ color: "red", fontWeight: 500, fontSize: "0.75rem" }}
               >
-                ↓ 2.1% vs last week
+               
               </Typography>
               <Typography
                 variant="body2"
                 sx={{ color: "#666", fontSize: "0.75rem" }}
               >
-                Booking from 1-6 Dec, 2020
+                Booking Last 10 days
               </Typography>
             </Box>
             
@@ -277,9 +273,9 @@ const Dashboard: React.FC = () => {
               <Legend wrapperStyle={{ fontSize: 12 }} />
               <Line
                 type="monotone"
-                dataKey="last6Days"
+                dataKey="last10Days"
                 stroke="#4682B4"
-                name="Last 6 days"
+                name="Last 10 days"
               />
               <Line
                 type="monotone"

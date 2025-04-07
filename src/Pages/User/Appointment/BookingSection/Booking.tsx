@@ -212,7 +212,7 @@ const Booking: React.FC = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      alert("Appointment booked successfully!");
+      
       Swal.fire({
         title: "Payment Successfully Completed",
         icon: "success",
@@ -344,7 +344,7 @@ console.log(details)
                   Experience: {details?.doctor?.years_of_experiance} Years
                 </Typography>
                 <Typography variant="subtitle1" sx={{ color: "#666" }}>
-                  Fees: ${details?.doctor?.consultation_fee}
+                  Fees: ₹{details?.doctor?.consultation_fee}
                 </Typography>
               </CardContent>
             </StyledCard>

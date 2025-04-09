@@ -5,6 +5,8 @@ import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import HealingIcon from '@mui/icons-material/Healing';
 import { keyframes } from '@emotion/react';
+import { useSelector } from 'react-redux';
+import ChatBot from '../Pages/User/ChatBot/ChatBot';
 
 // Animation for the section
 const fadeIn = keyframes`
@@ -17,6 +19,29 @@ const fadeIn = keyframes`
     transform: translateY(0);
   }
 `;
+const slideIn = keyframes`
+  from {
+    transform: translate(100%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+`;
+const ChatBotContainer = styled(Box)(({ theme }) => ({
+  position: 'fixed',
+  bottom: theme.spacing(2),
+  right: theme.spacing(2),
+  width: '350px',
+  height: '500px',
+  zIndex: 1000,
+  animation: `${slideIn} 0.5s ease-out forwards`,
+  [theme.breakpoints.down('sm')]: {
+    width: '300px',
+    height: '400px',
+  },
+}));
 
 const AboutSectionWrapper = styled(Box)(({ theme }) => ({
   background: `linear-gradient(90deg, #f0f8ff, #ffffff)`,
@@ -48,7 +73,7 @@ const IconCard = styled(Box)(({ theme }) => ({
 
 const About: React.FC = () => {
   const theme = useTheme();
-
+  const { show } = useSelector((state: any) => state.chat);
   return (
     <AboutSectionWrapper>
       <Container>
@@ -127,6 +152,7 @@ const About: React.FC = () => {
             Contact Us
           </Button>
         </Box>
+        
       </Container>
     </AboutSectionWrapper>
   );

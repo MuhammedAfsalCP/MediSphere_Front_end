@@ -237,7 +237,7 @@ const Nav: React.FC = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton disabled={!user?.user} onClick={() => navigate('/availability')}>
+            <ListItemButton disabled={!user?.user} onClick={() => navigate('availability')}>
               <ListItemIcon>
               <AccessTimeIcon />
               </ListItemIcon>
@@ -245,7 +245,7 @@ const Nav: React.FC = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton disabled={!user?.user} onClick={()=>navigate('/patientshistory')}>
+            <ListItemButton disabled={!user?.user} onClick={()=>navigate('patientshistory')}>
               <ListItemIcon>
               <HistoryIcon />
               </ListItemIcon>
@@ -253,7 +253,7 @@ const Nav: React.FC = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate('/wallet')}>
+            <ListItemButton onClick={() => navigate('wallet')}>
               <ListItemIcon>
               <AccountBalanceWalletIcon />
               </ListItemIcon>
@@ -262,7 +262,7 @@ const Nav: React.FC = () => {
           </ListItem>
           
           {user?.user&&(<ListItem disablePadding >
-        <ListItemButton  onClick={() => navigate("/Profile")}>
+        <ListItemButton  onClick={() => navigate("Profile")}>
           <Avatar
             src={`${apiUrl}/${user?.user?.userdetail?.profile_pic}`}
             sx={{ width: 40, height: 40, mr: 2 }} // Margin-right for spacing

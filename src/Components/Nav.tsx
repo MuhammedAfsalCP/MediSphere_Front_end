@@ -28,10 +28,11 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import { TokenInstance } from '../lib/AxiosInstance';
-import { FetchUser,logout } from "../Redux/Slices/AuthSlice";
+import { FetchUser, logout } from "../Redux/Slices/AuthSlice";
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 import ProfileDropdown from '../utils/materialui/Profiledropdown';
+import { chatshowing, closing } from '../Redux/Slices/ChatSlice';
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Nav: React.FC = () => {
@@ -46,29 +47,29 @@ const Nav: React.FC = () => {
     setMobileOpen(!mobileOpen);
   };
   const token = localStorage.getItem("token")
-  const { data, isLoading,error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["fetchuser"],
     queryFn: async () => {
       const response = await TokenInstance.get('/userdetailsget/')
 
       return response.data
     },
-    
+
     enabled: !!token
-    
+
   })
   useEffect(() => {
 
     if (data) {
       dispatch(FetchUser(data))
     }
-    
+
 
 
 
   }, [data])
   // console.log(user)
-  if(error){
+  if (error) {
     navigate("/")
   }
 
@@ -89,7 +90,7 @@ const Nav: React.FC = () => {
         // Navigate to homepage
       }
     });
-    
+
     // Redirect the user to the login page after logging out
   };
   const handleLogoutlap = () => {
@@ -110,8 +111,8 @@ const Nav: React.FC = () => {
         // Navigate to homepage
       }
     });
-    
-    
+
+
   };
   return (
     <AppBar
@@ -170,7 +171,7 @@ const Nav: React.FC = () => {
                 color: theme.palette.text.primary,
                 '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
               }}
-              onClick={() => navigate('/')}
+              onClick={() => { navigate('/'), dispatch(closing()) }}
             >
               Home
             </Button>
@@ -181,7 +182,7 @@ const Nav: React.FC = () => {
                 color: theme.palette.text.primary,
                 '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
               }}
-              onClick={() => navigate('/AppointmentLayout')}
+              onClick={() => { navigate('/AppointmentLayout'), dispatch(closing()) }}
             >
               Appointment
             </Button>
@@ -192,13 +193,14 @@ const Nav: React.FC = () => {
                 color: theme.palette.text.primary,
                 '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
               }}
-              onClick={() => navigate('/prescriptions')}
+              onClick={() => { navigate('/prescriptions'), dispatch(closing()) }}
             >
               Prescription
             </Button>
             <Button
               startIcon={<ChatIcon />}
-              disabled={true}
+              disabled={!user?.user}
+              onClick={() => dispatch(chatshowing())}
               sx={{
                 color: theme.palette.text.primary,
                 '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
@@ -212,7 +214,7 @@ const Nav: React.FC = () => {
                 color: theme.palette.text.primary,
                 '&:hover': { color: '#00a2ff', backgroundColor: 'transparent' },
               }}
-              onClick={() => navigate('/About')}
+              onClick={() => { navigate('/About'), dispatch(closing()) }}
             >
               About Us
             </Button>
@@ -258,18 +260,18 @@ const Nav: React.FC = () => {
             </IconButton>
 
             {/* Profile Picture */}
-            <IconButton  onClick={() => setDpClick(!dpClick)}>
+            <IconButton onClick={() => setDpClick(!dpClick)}>
               <Avatar src={`${apiUrl}${user?.user?.userdetail?.profile_pic}` || "/default-avatar.png"} />
             </IconButton>
             {dpClick && (
-        <ProfileDropdown
-          user={user?.user?.userdetail}
-          dpClick={dpClick}
-          setDpClick={setDpClick}
-          handleLogout={handleLogoutlap}
-        />
-      )}
-            
+              <ProfileDropdown
+                user={user?.user?.userdetail}
+                dpClick={dpClick}
+                setDpClick={setDpClick}
+                handleLogout={handleLogoutlap}
+              />
+            )}
+
           </Box>
 
 
@@ -302,7 +304,7 @@ const Nav: React.FC = () => {
         {/* Navigation List */}
         <List>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate('/')}>
+            <ListItemButton onClick={() => { navigate('/'), dispatch(closing()) }}>
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
@@ -310,7 +312,7 @@ const Nav: React.FC = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton disabled={!user?.user} onClick={() => navigate('/AppointmentLayout')}>
+            <ListItemButton disabled={!user?.user} onClick={() => { navigate('/AppointmentLayout'), dispatch(closing()) }}>
               <ListItemIcon>
                 <EventIcon />
               </ListItemIcon>
@@ -318,7 +320,7 @@ const Nav: React.FC = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton disabled={!user?.user} onClick={() => navigate('/prescriptions')}>
+            <ListItemButton disabled={!user?.user} onClick={() => { navigate('/prescriptions'), dispatch(closing()) }}>
               <ListItemIcon>
                 <DescriptionIcon />
               </ListItemIcon>
@@ -326,7 +328,8 @@ const Nav: React.FC = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton disabled={true}>
+            <ListItemButton disabled={!user?.user}
+              onClick={() => dispatch(chatshowing())}>
               <ListItemIcon>
                 <ChatIcon />
               </ListItemIcon>
@@ -334,24 +337,24 @@ const Nav: React.FC = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate('/About')}>
+            <ListItemButton onClick={() => { navigate('/About'), dispatch(closing()) }}>
               <ListItemIcon>
                 <InfoIcon />
               </ListItemIcon>
               <ListItemText primary="About Us" />
             </ListItemButton>
           </ListItem>
-          
-          {user?.user&&(<ListItem disablePadding >
-        <ListItemButton  onClick={() => navigate("/Profile")}>
-          <Avatar
-            src={`${apiUrl}/${user?.user?.userdetail?.profile_pic}`}
-            sx={{ width: 40, height: 40, mr: 2 }} // Margin-right for spacing
-            alt="Profile"
-          />
-          <ListItemText primary="Profile" />
-        </ListItemButton>
-      </ListItem>)}
+
+          {user?.user && (<ListItem disablePadding >
+            <ListItemButton onClick={() => navigate("/Profile")}>
+              <Avatar
+                src={`${apiUrl}/${user?.user?.userdetail?.profile_pic}`}
+                sx={{ width: 40, height: 40, mr: 2 }} // Margin-right for spacing
+                alt="Profile"
+              />
+              <ListItemText primary="Profile" />
+            </ListItemButton>
+          </ListItem>)}
         </List>
 
         {/* Sign In and Sign Up Buttons at the Bottom */}

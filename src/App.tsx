@@ -29,6 +29,8 @@ import Availability from './Pages/Doctor/Home/Availabilities/Availability';
 import PatienentsHistory from './Pages/Doctor/Home/PatientsHistory/PatienentsHistory';
 import Wallet from './Pages/Doctor/Home/Wallet/Wallet';
 
+import AboutWithNavbar from './Pages/User/About/AboutWithNavbar';
+
 
 
 function App() {
@@ -36,7 +38,7 @@ function App() {
     <>
       <Routes>
           <Route path='/' element={<Home/>}/>
-          <Route path='About' element={<About/>}/>
+          <Route path='About' element={<AboutWithNavbar/>}/>
           <Route path='login' element={<Login/>}/>
           <Route path='loginmobile' element={<LoginWithMobile/>}/>
           <Route path='userregister' element={<RegisterUser/>}/>
@@ -49,6 +51,7 @@ function App() {
             <Route path='AppointmentHistoryLayout' element={<AppointmentHistoryLayout/>}/>
           </Route>
           <Route path='prescriptions' element={<PrescriptionsLayout/>}/>
+          
           <Route path='prescriptionShowing' element={<PrescriptionShowing/>}/>
           <Route path='Booking' element={<Booking/>}/>
           <Route path='Viewmore' element={<ViewMore/>}/>

@@ -3,6 +3,7 @@ import {
     Box,
     Button,
     Drawer,
+    keyframes,
     useTheme,
 } from "@mui/material";
 import Nav from "../../../Components/Nav";
@@ -10,9 +11,36 @@ import Nav from "../../../Components/Nav";
 import { fadeIn } from "../../../utils/materialui/Materialui";
 import DoctorsShowing from "./DoctorsList/DoctorsShowing";
 import { Outlet, useNavigate } from "react-router-dom";
-
+import { useSelector } from "react-redux";
+import { styled } from "@mui/system";
+import ChatBot from "../ChatBot/ChatBot";
+const slideIn = keyframes`
+  from {
+    transform: translate(100%, 100%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+`;
+const ChatBotContainer = styled(Box)(({ theme }) => ({
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+    width: '350px',
+    height: '500px',
+    zIndex: 1000,
+    animation: `${slideIn} 0.5s ease-out forwards`,
+    [theme.breakpoints.down('sm')]: {
+      width: '300px',
+      height: '400px',
+    },
+  }));
 const AppointmentLayout: React.FC = () => {
     const [IsShow,setIsShow]=useState(true)
+    const { show } = useSelector((state: any) => state.chat);
+    console.log(show)
     const navigate=useNavigate()
     const theme = useTheme();
     return (
@@ -89,6 +117,11 @@ const AppointmentLayout: React.FC = () => {
                 {/* Main Content */}
                 {IsShow?<DoctorsShowing/>:<Outlet/>}
             </Box>
+            {show && (
+        <ChatBotContainer>
+          <ChatBot />
+        </ChatBotContainer>
+      )}
         </Box>
     );
 };
